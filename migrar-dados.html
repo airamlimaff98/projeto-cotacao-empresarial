@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migração de Dados - Firebase</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #29287A;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #1e3a5f;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .secao {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        .secao h2 {
+            color: #1e3a5f;
+            margin-top: 0;
+        }
+        button {
+            background-color: #1e3a5f;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #2d5a8f;
+        }
+        .btn-migrar {
+            background-color: #28a745;
+        }
+        .btn-migrar:hover {
+            background-color: #218838;
+        }
+        .btn-voltar {
+            background-color: #6c757d;
+        }
+        .btn-voltar:hover {
+            background-color: #5a6268;
+        }
+        .log {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .log-item {
+            padding: 5px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .sucesso {
+            color: #155724;
+        }
+        .erro {
+            color: #721c24;
+        }
+        .info {
+            color: #004085;
+        }
+        .progresso {
+            width: 100%;
+            height: 30px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progresso-barra {
+            height: 100%;
+            background-color: #28a745;
+            width: 0%;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="fornecedores.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Migração de Dados para Firebase</h1>
+        
+        <!-- Seção Fornecedores -->
+        <div class="secao">
+            <h2>📦 Fornecedores</h2>
+            <p>Migrar lista de fornecedores para o Firebase Realtime Database.</p>
+            <p><strong>Total de fornecedores:</strong> <span id="totalFornecedores">0</span></p>
+            
+            <button class="btn-migrar" onclick="migrarFornecedores()">Migrar Fornecedores</button>
+            
+            <div class="progresso" id="progressoFornecedores" style="display:none;">
+                <div class="progresso-barra" id="barraFornecedores">0%</div>
+            </div>
+            
+            <div class="log" id="logFornecedores" style="display:none;"></div>
+        </div>
+        
+        <!-- Seção Centros de Custo -->
+        <div class="secao">
+            <h2>🏢 Centros de Custo</h2>
+            <p>Migrar centros de custo para o Firebase.</p>
+            
+            <button class="btn-migrar" onclick="migrarCentrosCusto()">Migrar Centros de Custo</button>
+            
+            <div class="log" id="logCentros" style="display:none;"></div>
+        </div>
+        
+        <!-- Seção Solicitantes -->
+        <div class="secao">
+            <h2>👥 Solicitantes</h2>
+            <p>Migrar lista de solicitantes para o Firebase.</p>
+            
+            <button class="btn-migrar" onclick="migrarSolicitantes()">Migrar Solicitantes</button>
+            
+            <div class="log" id="logSolicitantes" style="display:none;"></div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn-voltar" onclick="window.location.href='index.html'">Voltar ao Sistema</button>
+        </div>
+    </div>
+
+    <script>
+        // Atualizar total de fornecedores
+        document.getElementById('totalFornecedores').textContent = fornecedoresLista.length;
+
+        // Função para adicionar log
+        function adicionarLog(elementoId, mensagem, tipo = 'info') {
+            const log = document.getElementById(elementoId);
+            log.style.display = 'block';
+            
+            const item = document.createElement('div');
+            item.className = `log-item ${tipo}`;
+            item.textContent = `[${new Date().toLocaleTimeString()}] ${mensagem}`;
+            log.appendChild(item);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        // Atualizar barra de progresso
+        function atualizarProgresso(porcentagem) {
+            const barra = document.getElementById('barraFornecedores');
+            barra.style.width = porcentagem + '%';
+            barra.textContent = Math.round(porcentagem) + '%';
+        }
+
+        // Migrar Fornecedores
+        async function migrarFornecedores() {
+            const log = 'logFornecedores';
+            const progresso = document.getElementById('progressoFornecedores');
+            
+            progresso.style.display = 'block';
+            atualizarProgresso(0);
+            adicionarLog(log, 'Iniciando migração de fornecedores...', 'info');
+            
+            try {
+                const total = fornecedoresLista.length;
+                let migrados = 0;
+                
+                for (let i = 0; i < total; i++) {
+                    const fornecedor = fornecedoresLista[i];
+                    
+                    try {
+                        const fornecedorRef = database.ref('fornecedores').push();
+                        await fornecedorRef.set({
+                            nome: fornecedor,
+                            ativo: true,
+                            criadoEm: firebase.database.ServerValue.TIMESTAMP
+                        });
+                        
+                        migrados++;
+                        const porcentagem = (migrados / total) * 100;
+                        atualizarProgresso(porcentagem);
+                        
+                        if (migrados % 50 === 0) {
+                            adicionarLog(log, `${migrados}/${total} fornecedores migrados...`, 'info');
+                        }
+                    } catch (error) {
+                        adicionarLog(log, `Erro ao migrar ${fornecedor}: ${error.message}`, 'erro');
+                    }
+                }
+                
+                adicionarLog(log, `✅ Migração concluída! ${migrados}/${total} fornecedores migrados com sucesso.`, 'sucesso');
+            } catch (error) {
+                adicionarLog(log, `❌ Erro na migração: ${error.message}`, 'erro');
+            }
+        }
+
+        // Migrar Centros de Custo
+        async function migrarCentrosCusto() {
+            const log = 'logCentros';
+            adicionarLog(log, 'Iniciando migração de centros de custo...', 'info');
+            
+            const centros = [
+                "3P ENERGIA - NOVA DESCOBERTA", "A SERVIÇO - SWEET FRUIT", "ADEVANILSO",
+                "ATIVA MINERAÇÃO", "AUDILAN F.", "BRENNAND - UMC", "CESAR", "COMBRITA",
+                "COND. PORTO FINO", "CONDEC", "CVS", "DINC - ESTRADA", "DRENAGEM - SWEET FRUIT",
+                "EH06 LOCAÇÕES - ARIZONA", "ESCRITORIO", "ETEX GYPSUM", "FABRICIO",
+                "FAZENDA DAN", "FAZENDA TERRA PROMETIDA", "GABRIEL - GVS CONSTRUTORA",
+                "INOXTEC - ATERRO", "JOCA", "JOCA - MATSUMOTO", "JPW - SE TEREZINA",
+                "LOCASERV", "LOTE PONTAL", "LOTEAMENTO PETROVILLE", "LOTEAMENTO SANTA BARBARA",
+                "MINERADORA JAGUARARI", "NALDI - PORTOFINO", "NARDINI JUAZEIRO", "OFICINA",
+                "PEPSICO", "PETROMUDAS", "PORTO FINO", "POSTO SANTANA", "SEDE ALF",
+                "SOL DO SÃO FRANCISCO", "SWEET FRUIT", "SWEET FRUIT - CASA NOVA",
+                "TRANSPORTADORA CRUZ DE MALTA", "VCA", "TULIO - PORTO FINO", "VCA - JUAZEIRO",
+                "VERTICAL", "ZANLORENZI", "REPUBLICA 01 - COHAB", "REPUBLICA 02 - V.DEBORA",
+                "A.L.F MATRIZ", "CENTRO DE MANUTENÇÃO", "GREEN VALLE", "SSF1 - TERRAPLENAGEM",
+                "BRENNAND PROJETOS", "SWEET FRUITS - RESERVATORIO", "SSF1 - LOCAÇÕES DE EQUIPAMENTOS",
+                "NARDINI - LOCAÇÕES DE EQUIPAMENTOS", "DINC - LOCAÇÕES DE EQUIPAMENTOS",
+                "HTB - AEROPORTO", "BRENNAND - ELETRICA", "JPW - SE COREMAS",
+                "GNL BRASIL - COPERGÁS", "CALISTO SABINO - LOCAÇÕES DE EQUIPAMENTOS",
+                "MGS - SOLAR JUAZEIRO", "MINERADORA JAGUARARI - LOCAÇÕES DE EQUIPAMENTOS",
+                "EDECON - LOCAÇÕES DE EQUIPAMENTOS", "EZEQUIEL - LOCAÇÕES DE EQUIPAMENTOS",
+                "RITA FILGUEIRA"
+            ];
+            
+            try {
+                let migrados = 0;
+                
+                for (const centro of centros) {
+                    try {
+                        const centroRef = database.ref('centrosCusto').push();
+                        await centroRef.set({
+                            nome: centro,
+                            ativo: true,
+                            criadoEm: firebase.database.ServerValue.TIMESTAMP
+                        });
+                        migrados++;
+                    } catch (error) {
+                        adicionarLog(log, `Erro ao migrar ${centro}: ${error.message}`, 'erro');
+                    }
+                }
+                
+                adicionarLog(log, `✅ Migração concluída! ${migrados}/${centros.length} centros de custo migrados.`, 'sucesso');
+            } catch (error) {
+                adicionarLog(log, `❌ Erro na migração: ${error.message}`, 'erro');
+            }
+        }
+
+        // Migrar Solicitantes
+        async function migrarSolicitantes() {
+            const log = 'logSolicitantes';
+            adicionarLog(log, 'Iniciando migração de solicitantes...', 'info');
+            
+            const solicitantes = [
+                "Bruno Éricles", "Airam Filgueira", "Isaac Cabral",
+                "Adevanilso", "José dos Santos", "Ledivan Enc."
+            ];
+            
+            try {
+                let migrados = 0;
+                
+                for (const solicitante of solicitantes) {
+                    try {
+                        const solicitanteRef = database.ref('solicitantes').push();
+                        await solicitanteRef.set({
+                            nome: solicitante,
+                            ativo: true,
+                            criadoEm: firebase.database.ServerValue.TIMESTAMP
+                        });
+                        migrados++;
+                    } catch (error) {
+                        adicionarLog(log, `Erro ao migrar ${solicitante}: ${error.message}`, 'erro');
+                    }
+                }
+                
+                adicionarLog(log, `✅ Migração concluída! ${migrados}/${solicitantes.length} solicitantes migrados.`, 'sucesso');
+            } catch (error) {
+                adicionarLog(log, `❌ Erro na migração: ${error.message}`, 'erro');
+            }
+        }
+    </script>
+</body>
+</html>

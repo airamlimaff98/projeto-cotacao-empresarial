@@ -1,0 +1,1481 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212; /* Fundo principal escuro */
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    min-height: 100vh;
+    color: #e2e8f0; /* Texto claro */
+}
+
+.container {
+    width: 100%;
+    min-height: 100vh;
+    background-color: #1e1e24; /* Fundo da estrutura central escuro */
+    padding: 10px 15px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Cabeçalho */
+.header {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 10px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #3f3f46; /* Divisória para modo escuro */
+    flex-shrink: 0;
+}
+
+.header-fields {
+    flex-grow: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.field-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.input-with-button {
+    flex-grow: 1;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.input-with-button select {
+    flex: 1;
+}
+
+.btn-add-select {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 3px;
+    min-width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-add-select:hover {
+    background-color: #218838;
+}
+
+.btn-reset-cotacao {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 12px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 3px;
+    min-width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-reset-cotacao:hover {
+    background-color: #218838;
+}
+
+/* Estilos de botão para adicionar itens aos selects (vindos de INSTRUCOES_BOTOES.txt) */
+.btn-add-select {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.btn-add-select:hover {
+    background-color: #218838;
+}
+
+.btn-add-select-small {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 2px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.btn-add-select-small:hover {
+    background-color: #218838;
+}
+
+@media print {
+    .btn-add-select, .btn-add-select-small { display: none !important; }
+}
+
+.field-row label {
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    color: #a0aec0; /* Cor do texto suavizada no tema escuro */
+}
+
+.field-row input,
+.field-row select {
+    flex-grow: 1;
+    padding: 8px 10px;
+    border: 1px solid #4a5568; /* Borda visível no modo escuro */
+    border-radius: 6px;
+    font-size: 13px;
+    transition: all 0.2s ease;
+    background-color: #2d3748; /* Fundo dos inputs */
+    color: #f7fafc; /* Texto interno input claro */
+}
+
+.field-row input:focus,
+.field-row select:focus {
+    outline: none;
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.15);
+}
+
+/* Base Global para evitar selects/inputs despadronizados (Assinaturas, Filtros, Datas, etc) */
+select, 
+input[type="text"], 
+input[type="date"], 
+input[type="number"] {
+    padding: 6px 10px;
+    border: 1px solid #4a5568; 
+    border-radius: 6px;
+    font-size: 13px;
+    transition: all 0.2s ease;
+    background-color: #2d3748 !important; /* Fundo padrão Dark Mode */
+    color: #f7fafc !important; /* Texto Branco */
+    color-scheme: dark; /* Força o dropdown nativo do navegador a ser escuro */
+    outline: none;
+    font-family: inherit;
+}
+
+/* Forçar TODAS as options a serem dark mode */
+select option {
+    background-color: #2d3748 !important;
+    color: #f7fafc !important;
+}
+
+select:focus, 
+input[type="text"]:focus, 
+input[type="date"]:focus, 
+input[type="number"]:focus {
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.15);
+}
+
+/* Tratamento especial para inputs bloqueados (readonly) como 'Airam Filho' e 'Direção' */
+input[readonly] {
+    background-color: #1e1e24 !important; /* Mais escuro para mostrar que está travado */
+    color: #a0aec0 !important; /* Texto mais apagado */
+    cursor: default;
+}
+
+/* Título */
+.title {
+    text-align: center;
+    color: rgb(99, 179, 237); /* Azul realçado para escuro */
+    font-size: 22px;
+    margin: 10px 0 15px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+}
+
+/* Tabela Workspace (Area que preenche espaço restante) */
+.table-wrapper {
+    flex-grow: 1; /* Pega todo o espaço restante do container flex */
+    overflow-y: auto; /* Permite rolar APENAS a tabela/wrapper de tabela */
+    overflow-x: auto;
+    border: 1px solid #3f3f46;
+    border-radius: 6px;
+    margin-bottom: 15px; /* Libera espaço pro flex calcular a rodapé */
+}
+
+/* Tabela */
+.cotacao-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    table-layout: fixed;
+    height: 100%;
+}
+/* Faz o thead e o footer "grudarem" na visão durante rolagem interna */
+.cotacao-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+}
+.cotacao-table tfoot {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+}
+
+.cotacao-table th,
+.cotacao-table td {
+    border: 1px solid #3f3f46; /* Borda visível com fundo escudo */
+    padding: 10px 6px;
+    text-align: center;
+    overflow: hidden;
+    vertical-align: middle;
+}
+
+.cotacao-table th:nth-child(1),
+.cotacao-table td:nth-child(1) {
+    width: 160px;
+}
+
+.cotacao-table th:nth-child(2),
+.cotacao-table td:nth-child(2) {
+    width: 60px;
+}
+
+.cotacao-table th:nth-child(3),
+.cotacao-table td:nth-child(3) {
+    width: 75px;
+}
+
+.header-row th {
+    background-color: #1a202c; /* Fundo Dark na head da Tabela */
+    color: #e2e8f0;
+    font-weight: 600;
+    padding: 12px 6px;
+    border-color: #2d3748;
+}
+
+.select-fornecedor {
+    width: 100%;
+    padding: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    border: 1px solid rgb(47, 3, 169);
+    border-radius: 4px;
+    background-color: #2d3748;
+    color: #f7fafc;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.fornecedor-print-value {
+    color: #ffffff0d !important;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    width: 100%;
+    display: block;
+    white-space: normal;
+    word-wrap: break-word;
+    word-break: break-all;
+    line-height: 1.2;
+}
+
+.fornecedor-header {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    width: 100%;
+}
+
+.btn-add-fornecedor {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 3px 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 3px;
+    min-width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.btn-add-fornecedor:hover {
+    background-color: #218838;
+}
+
+.subheader-row th {
+    font-weight: bold;
+    padding: 8px 5px;
+    font-size: 11px;
+}
+
+/* Cores dos fornecedores no cabeçalho */
+.condec {
+    background-color: #0d5ccb; /* Azul Escuro */
+}
+
+.teleaco {
+    background-color: #0d5ccb; /* Marrom Laranjado Escuro */
+}
+
+.premolnitos {
+    background-color: #0d5ccb; /* Verde Escuro */
+}
+
+.melhor {
+    background-color: #37ae5d; /* Cinza Escuro */
+}
+
+.cotacao-table tbody tr {
+    transition: background-color 0.15s;
+}
+
+/* Base transparente para permitir cores combinadas */
+.cotacao-table tbody td {
+    background-color: transparent;
+}
+
+/* Zebrado Translúcido nos blocos do Fornecedor para Leitura Fácil */
+.cotacao-table tbody tr:nth-child(even) td.condec { background-color: rgba(255, 255, 255, 0.05); }
+.cotacao-table tbody tr:nth-child(odd) td.condec { background-color: rgba(255, 255, 255, 0.05); }
+/* Fundo levemente translúcido para as colunas dos fornecedores para melhor leitura */
+.cotacao-table tbody td.condec,
+.cotacao-table tbody td.teleaco,
+.cotacao-table tbody td.premolnitos,
+.cotacao-table tbody td.melhor {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.cotacao-table tbody tr:nth-child(even) td.teleaco { background-color: rgba(255, 255, 255, 0.05); }
+.cotacao-table tbody tr:nth-child(odd) td.teleaco { background-color: rgba(255, 255, 255, 0.05); }
+
+.cotacao-table tbody tr:nth-child(even) td.premolnitos { background-color: rgba(255, 255, 255, 0.05); }
+.cotacao-table tbody tr:nth-child(odd) td.premolnitos { background-color: rgba(255, 255, 255, 0.05); }
+
+.cotacao-table tbody tr:nth-child(even) td.melhor { background-color: #ffffff0d; }
+.cotacao-table tbody tr:nth-child(odd) td.melhor { background-color: rgba(255, 255, 255, 0.05); }
+
+.cotacao-table tbody tr:hover td {
+    background-color: rgba(255, 255, 255, 0.1) !important; /* Efeito hover noturno uniforme */
+}
+
+.cotacao-table tbody input,
+.cotacao-table tbody select {
+    width: 100%;
+    padding: 6px 4px;
+    border: 1px solid #010101;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 12px;
+    box-sizing: border-box;
+    transition: all 0.2s;
+    background-color: #ffffff0d;
+    color: #fbfafa;
+}
+
+.cotacao-table tbody input:focus,
+.cotacao-table tbody select:focus {
+    outline: none;
+    border-color: #63b3ed;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 2px rgba(14, 198, 198, 0.2);
+}
+
+.cotacao-table tbody .unit-input {
+    text-align: right;
+    padding-right: 4px;
+}
+
+.cotacao-table tbody .qtd-input {
+    text-align: center;
+}
+
+.cotacao-table tbody select {
+    width: 100%;
+    padding: 4px 2px;
+    border: 1px solid #ccc;
+    font-size: 12px;
+    box-sizing: border-box;
+}
+
+.total-cell {
+    font-weight: 600;
+    color: #e2e8f0;
+    background-color: #f8f4f40d !important;
+}
+
+.melhor-preco {
+    background-color: #276749 !important; /* Verde mais escuro do tema noturno */
+    font-weight: 700;
+    color: #c6f6d5; /* Texto Verde claro */
+    border-color: #67a481 !important; /* Borda Verde médio */
+    transition: all 0.2s;
+}
+
+/* Rodapé da tabela */
+.total-row td,
+.frete-row td,
+.total-final-row td {
+    font-weight: bold;
+    background-color: #2d3748; /* Escuro */
+    color: #e2e8f0;
+}
+
+.total-value {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.frete-input {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    text-align: center;
+    font-size: 12px;
+}
+
+/* Botoes Adicionar e Ações Fixas */
+.botoes-acao {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    background-color: #1e1e24; /* Fundo rodapé para combinar com a estrutura */
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.4); /* Sombra Dark Mode */
+    flex-shrink: 0;
+}
+
+.btn-add,
+.btn-calcular,
+.btn-pdf,
+.btn-salvar,
+.btn-carregar,
+.btn-limpar {
+    background-color: #1e3a5f;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.btn-add:hover,
+.btn-calcular:hover,
+.btn-pdf:hover,
+.btn-salvar:hover,
+.btn-carregar:hover,
+.btn-limpar:hover {
+    background-color: #2d5a8f;
+}
+
+.btn-calcular {
+    background-color: #28a745;
+}
+
+.btn-calcular:hover {
+    background-color: #218838;
+}
+
+.btn-pdf {
+    background-color: #dc3545;
+}
+
+.btn-pdf:hover {
+    background-color: #c82333;
+}
+
+.btn-salvar {
+    background-color: #28a745;
+}
+
+.btn-salvar:hover {
+    background-color: #218838;
+}
+
+.btn-carregar {
+    background-color: #17a2b8;
+}
+
+.btn-carregar:hover {
+    background-color: #138496;
+}
+
+.btn-limpar {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.btn-limpar:hover {
+    background-color: #e0a800;
+}
+
+.btn-remove {
+    background-color: #ffffff67;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.btn-remove:hover {
+    background-color: #c82333;
+}
+
+/* -------------------------------------
+   PAINEL EXECUTIVO & ASSINATURAS (NOVO) 
+-------------------------------------- */
+.painel-executivo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #1e1e24; /* Dark Mode */
+    border: 1px solid #3f3f46;
+    border-radius: 6px;
+}
+
+.painel-executivo h3 {
+    font-size: 12px;
+    color: #cbd5e0;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #4a5568;
+    padding-bottom: 3px;
+}
+
+.resumo-vencedor {
+    display: flex;
+    flex-direction: column;
+}
+
+#textoResumoVencedor {
+    font-size: 13px;
+    color: #e2e8f0;
+    padding: 10px;
+    background-color: #2d3748;
+    border-radius: 6px;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    line-height: 1.5;
+}
+
+.justificativa-compra .textarea-justificativa {
+    width: 100%;
+    background-color: #2d3748;
+    color: #e2e8f0;
+    border: 1px solid #4a5568;
+    border-radius: 6px;
+    padding: 10px;
+    font-family: inherit;
+    font-size: 13px;
+    resize: vertical;
+}
+
+.assinaturas-diretoria {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 10px;
+    padding-top: 20px;
+    border-top: 1px solid #3f3f46;
+}
+
+.assinatura-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    padding-top: 40px;
+}
+
+.assinatura-box.box-diretoria {
+    border: 1px dashed #4a5568;
+    background-color: #2d3748;
+    border-radius: 8px;
+    padding: 20px 10px 10px;
+}
+
+.assinatura-linha-vazia {
+    width: 80%;
+    margin: 0 auto 5px auto;
+    border-bottom: 1px solid #718096;
+}
+
+.assinatura-cargo select,
+.assinatura-cargo input {
+    background: transparent;
+    color: #e2e8f0;
+    border: none;
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+    outline: none;
+    width: 100%;
+}
+
+.assinatura-cargo input[readonly] {
+    cursor: default;
+}
+
+.assinatura-label {
+    font-size: 11px;
+    color: #a0aec0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+}
+
+.data-aprovacao {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 10px;
+    color: #a0aec0;
+}
+
+/* Campos Livres na Tabela (Frete e Pgto) */
+.frete-input, .pgto-input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: 1px solid #4a5568;
+    color: #e2e8f0;
+    text-align: center;
+    font-size: 11px;
+    padding: 3px;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+.frete-input:focus, .pgto-input:focus {
+    background-color: #2d3748;
+}
+
+/* Responsividade */
+@media screen and (max-width: 1200px) {
+    .cotacao-table {
+        font-size: 11px;
+    }
+    
+    .cotacao-table th,
+    .cotacao-table td {
+        padding: 6px 3px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .header-fields {
+        grid-template-columns: 1fr;
+    }
+    
+    .assinaturas {
+        grid-template-columns: 1fr;
+    }
+    
+    .botoes-acao {
+        flex-direction: column;
+    }
+    
+    .cotacao-table {
+        font-size: 10px;
+        display: block;
+        overflow-x: auto;
+    }
+}
+@media print {
+
+    /* =============================================
+       CLEAN MINIMALIST PDF THEME
+       ============================================= */
+
+    @page {
+        size: A4 landscape;
+        margin: 8mm;
+    }
+
+    * {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact !important;
+    }
+
+    html, body {
+        padding: 0;
+        margin: 0;
+        background: #ffffff !important;
+        width: 100%;
+        height: auto;
+        display: block;
+        font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
+        color: #111827 !important;
+    }
+
+    .container {
+        box-shadow: none;
+        background: #ffffff;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    /* ── CABEÇALHO ── */
+    .header {
+        border: none;
+        page-break-after: avoid;
+        margin-bottom: 12px;
+        padding: 12px 20px;
+        background: #1e3a5f !important;
+        background-color: #1e3a5f !important;
+        border-radius: 10px;
+        border: none !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .logo-container,
+    .logo-icon,
+    .logo-text,
+    .logo-text span {
+        display: none !important;
+    }
+
+    .header-fields {
+        flex: 1;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+    }
+
+    .field-row {
+        margin-bottom: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .field-row label {
+        color: #93c5fd !important;
+        font-size: 7px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .field-row input,
+    .field-row select {
+        color: #ffffff !important;
+        font-size: 11px;
+        font-weight: 600;
+        background: transparent !important;
+        border: none !important;
+    }
+
+    .header .print-value,
+    .header-print-value {
+        display: inline-block !important;
+        color: #ffffff !important;
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        visibility: visible !important;
+    }
+
+    /* ── TÍTULO ── */
+    .title {
+        color: #111827;
+        font-size: 18px;
+        margin: 8px 0;
+        page-break-after: avoid;
+        font-weight: 800;
+        text-align: center;
+        background: transparent;
+        border-bottom: 2px solid #1e3a5f;
+        padding-bottom: 6px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    /* ── TABELA ── */
+    .table-wrapper {
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: transparent;
+        overflow: visible !important;
+        width: 100% !important;
+        display: block;
+    }
+
+    .cotacao-table {
+        page-break-inside: auto;
+        font-size: 8.5px;
+        margin-bottom: 8px;
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        border-radius: 0;
+        overflow: visible;
+        box-shadow: none;
+        table-layout: fixed;
+        border-collapse: collapse;
+    }
+
+    .cotacao-table tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+    }
+
+    .cotacao-table thead {
+        display: table-header-group;
+    }
+
+    .cotacao-table tfoot {
+        display: table-footer-group;
+    }
+
+    /* ── CABEÇALHOS DA TABELA ── */
+    .cotacao-table th {
+        padding: 6px 3px;
+        font-size: 7.5px;
+        font-family: 'Inter', Arial, sans-serif !important;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border: 1px solid #cbd5e1 !important;
+    }
+
+    /* Colunas fixas: Item, Qtd, Und */
+    .cotacao-table th:nth-child(1),
+    .cotacao-table th:nth-child(2),
+    .cotacao-table th:nth-child(3) {
+        background-color: #334155 !important;
+        color: #ffffff !important;
+    }
+
+    /* Fornecedores */
+    .cotacao-table th.condec {
+        background-color: #3b82f6 !important;
+        color: #ffffff !important;
+    }
+
+    .cotacao-table th.teleaco {
+        background-color: #6366f1 !important;
+        color: #ffffff !important;
+    }
+
+    .cotacao-table th.premolnitos {
+        background-color: #8b5cf6 !important;
+        color: #ffffff !important;
+    }
+
+    /* Melhor Preço */
+    .cotacao-table th.melhor {
+        background-color: #059669 !important;
+        color: #ffffff !important;
+    }
+
+    /* Sub-cabeçalhos (Unit, Desconto, Total) */
+    .subheader-row th.condec,
+    .subheader-row th.teleaco,
+    .subheader-row th.premolnitos {
+        background-color: #f1f5f9 !important;
+        color: #475569 !important;
+        font-weight: 600;
+        border: 1px solid #cbd5e1 !important;
+    }
+
+    .subheader-row th.melhor {
+        background-color: #ecfdf5 !important;
+        color: #065f46 !important;
+        font-weight: 600;
+        border: 1px solid #cbd5e1 !important;
+    }
+
+    /* ── CÉLULAS DE DADOS ── */
+    .cotacao-table td {
+        padding: 4px 3px;
+        font-size: 8px;
+        font-family: 'Inter', Arial, sans-serif !important;
+        border: 1px solid #cbd5e1 !important;
+        background-color: #ffffff !important;
+        color: #111827 !important;
+        height: auto !important;
+    }
+
+    /* Zebra striping sutil */
+    .cotacao-table tbody tr:nth-child(even) td {
+        background-color: #f8fafc !important;
+    }
+
+    /* Colunas de desconto sempre visíveis */
+    .cotacao-table th:nth-child(5),
+    .cotacao-table td:nth-child(5),
+    .cotacao-table th:nth-child(8),
+    .cotacao-table td:nth-child(8),
+    .cotacao-table th:nth-child(11),
+    .cotacao-table td:nth-child(11),
+    .cotacao-table th:nth-child(14),
+    .cotacao-table td:nth-child(14) {
+        display: table-cell !important;
+    }
+
+    .cotacao-table td:nth-child(n+4) .print-value {
+        color: #111827 !important;
+    }
+
+    /* Colunas de "Melhor Preço" - fundo verde suave */
+    .cotacao-table td.melhor,
+    .cotacao-table tbody tr td.melhor {
+        background-color: #ecfdf5 !important;
+        color: #065f46 !important;
+    }
+
+    .cotacao-table tbody tr:nth-child(even) td.melhor {
+        background-color: #d1fae5 !important;
+    }
+
+    .cotacao-table td.melhor .print-value,
+    .cotacao-table td.melhor .melhor-valor {
+        color: #065f46 !important;
+        font-weight: 700 !important;
+    }
+
+    .cotacao-table td.melhor .melhor-fornecedor {
+        color: #059669 !important;
+        font-weight: 600 !important;
+        font-size: 7px !important;
+    }
+
+    /* Destaque: Linha do melhor preço por item */
+    .cotacao-table tbody td {
+        background-color: transparent;
+    }
+
+    .total-cell {
+        color: #1e293b !important;
+        font-weight: bold !important;
+        font-size: 9px !important;
+    }
+
+    .total-cell.melhor-preco,
+    .melhor-preco,
+    .cotacao-table tbody .melhor-preco {
+        background-color: #d1fae5 !important;
+        color: #065f46 !important;
+        font-weight: bold !important;
+        border: 1px solid #6ee7b7 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .cotacao-table tbody .total-cell {
+        color: #111827 !important;
+        font-weight: bold !important;
+        visibility: visible !important;
+    }
+
+    .melhor-preco .print-value {
+        color: #065f46 !important;
+        font-weight: bold !important;
+    }
+
+    /* ── CONDIÇÃO DE PAGAMENTO - VISÍVEL ── */
+    .pgto-row {
+        display: table-row !important;
+    }
+
+    .pgto-row td {
+        background-color: #f1f5f9 !important;
+        color: #111827 !important;
+        font-weight: 600 !important;
+        font-size: 9px !important;
+        border: 1px solid #cbd5e1 !important;
+    }
+
+    .pgto-row .print-value,
+    .pgto-row .pgto-input {
+        display: inline-block !important;
+        color: #111827 !important;
+        font-weight: 600 !important;
+        font-size: 9px !important;
+        visibility: visible !important;
+    }
+
+    /* ── RODAPÉ DA TABELA (Subtotais e Totais) ── */
+    .total-row td,
+    .frete-row td,
+    .total-final-row td {
+        font-weight: bold !important;
+        font-size: 9px !important;
+        padding: 5px 3px;
+        border-top: 2px solid #cbd5e1 !important;
+        background-color: #ffffff !important;
+        color: #111827 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Label "SUBTOTAL / TOTAL" */
+    .total-row td:nth-child(n+1):nth-child(-n+3),
+    .total-final-row td:nth-child(n+1):nth-child(-n+3) {
+        background-color: #f1f5f9 !important;
+        color: #111827 !important;
+        font-weight: 700 !important;
+    }
+
+    /* Valores por fornecedor no rodapé */
+    .total-row td.condec, .total-final-row td.condec {
+        background-color: #eff6ff !important;
+        color: #1d4ed8 !important;
+    }
+
+    .total-row td.teleaco, .total-final-row td.teleaco {
+        background-color: #eef2ff !important;
+        color: #4338ca !important;
+    }
+
+    .total-row td.premolnitos, .total-final-row td.premolnitos {
+        background-color: #f5f3ff !important;
+        color: #6d28d9 !important;
+    }
+
+    /* Melhor no rodapé */
+    .total-row td.melhor, .total-final-row td.melhor {
+        background-color: #ecfdf5 !important;
+        color: #065f46 !important;
+        font-weight: 800 !important;
+    }
+
+    /* Células vazias / espaçadores no rodapé */
+    .total-row td:not([class*="condec"]):not([class*="teleaco"]):not([class*="premolnitos"]):not([class*="melhor"]):not(:nth-child(-n+3)),
+    .total-final-row td:not([class*="condec"]):not([class*="teleaco"]):not([class*="premolnitos"]):not([class*="melhor"]):not(:nth-child(-n+3)) {
+        background-color: #ffffff !important;
+        border: none !important;
+    }
+
+    .total-value {
+        font-size: 10px !important;
+        font-weight: bold !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* ── PAINEL EXECUTIVO ── */
+    .painel-executivo {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        background-color: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 8px;
+        margin: 6px 0;
+        padding: 8px 10px;
+        page-break-inside: avoid;
+    }
+
+    .painel-executivo h3 {
+        color: #334155 !important;
+        font-size: 9px;
+        border-bottom: 1px solid #cbd5e1;
+        margin-bottom: 4px;
+        padding-bottom: 3px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    #textoResumoVencedor {
+        background-color: transparent !important;
+        color: #1e293b !important;
+        border: none;
+        font-size: 9px !important;
+    }
+
+    .textarea-justificativa {
+        background-color: transparent !important;
+        color: #1e293b !important;
+        border: none !important;
+        resize: none;
+        overflow: hidden;
+        font-size: 9px !important;
+    }
+
+    .frete-input::placeholder,
+    .pgto-input::placeholder,
+    .textarea-justificativa::placeholder {
+        color: transparent !important;
+    }
+
+    /* ── ASSINATURAS ── */
+    .assinaturas-diretoria {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-top: 10px;
+        page-break-inside: avoid;
+        border-top: 1px solid #e2e8f0;
+        padding-top: 10px;
+    }
+
+    .assinatura-box {
+        padding-top: 20px;
+        background-color: transparent !important;
+        border: none !important;
+    }
+
+    .assinatura-linha-vazia {
+        border-bottom: 1px solid #94a3b8;
+        width: 85%;
+        margin-bottom: 6px;
+    }
+
+    .assinatura-cargo input,
+    .assinatura-cargo select {
+        color: #1e293b !important;
+        font-weight: 600 !important;
+        background: transparent !important;
+        border: none !important;
+        appearance: none !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        text-align: center;
+        width: 100%;
+        font-size: 9px !important;
+    }
+
+    .assinatura-label {
+        color: #64748b !important;
+        font-size: 7px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+    }
+
+    .data-aprovacao {
+        color: #64748b !important;
+        font-size: 7px;
+    }
+
+    /* ── ELEMENTOS OCULTOS ── */
+    .btn-add,
+    .btn-calcular,
+    .btn-pdf,
+    .btn-remove,
+    .btn-remove-select-item,
+    .btn-add-select,
+    .btn-add-fornecedor,
+    .btn-reset-cotacao,
+    .btn-edit-item,
+    .btn-salvar,
+    .btn-carregar,
+    .btn-limpar,
+    .botoes-acao {
+        display: none !important;
+    }
+
+    /* Esconder inputs/selects nativos - os .print-value spans os substituem */
+    .cotacao-table input,
+    .cotacao-table select:not(.select-fornecedor) {
+        display: none !important;
+    }
+
+    /* Selects de fornecedores são escondidos pelo JS, não forçar aqui */
+    .select-fornecedor {
+        display: none !important;
+    }
+
+    /* ── VALORES IMPRESSOS ── */
+    .print-value {
+        display: inline-block !important;
+        color: #111827 !important;
+        font-size: 8px !important;
+        font-weight: 700 !important;
+        text-align: center;
+        width: 100%;
+        padding: 1px;
+        visibility: visible !important;
+    }
+
+    .print-value.item-select {
+        text-align: left !important;
+    }
+
+    .print-value.unit-input,
+    .print-value.qtd-input,
+    .print-value.desc-input {
+        text-align: center !important;
+    }
+
+    .fornecedor-print-value {
+        display: inline-block !important;
+        color: #111827 !important;
+        font-weight: 800 !important;
+        text-transform: uppercase;
+        font-size: 9px !important;
+        visibility: visible !important;
+    }
+
+    .melhor-valor,
+    .melhor-fornecedor {
+        color: #065f46 !important;
+        font-weight: 700 !important;
+        font-size: 9px !important;
+    }
+
+    .notificacao {
+        display: none !important;
+    }
+}
+
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+}
+
+.modal-content {
+    background-color: #1e1e24; /* Fundo escuro do modal */
+    margin: 5% auto;
+    padding: 0;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 900px;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+}
+
+.modal-header {
+    background-color: #1a202c; /* Azul/cinza bem escuro para o cabeçalho modal */
+    color: #e2e8f0;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #3f3f46;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.close {
+    color: white;
+    font-size: 32px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.close:hover {
+    color: #ccc;
+}
+
+.modal-body {
+    padding: 20px;
+    max-height: calc(80vh - 80px);
+    overflow-y: auto;
+}
+
+.filtros {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #3f3f46;
+}
+
+.filtros select {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #4a5568;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #2d3748;
+    color: #e2e8f0;
+}
+
+.filtros button {
+    padding: 8px 20px;
+    background-color: #1e3a5f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.filtros button:hover {
+    background-color: #2d5a8f;
+}
+
+.lista-cotacoes {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.cotacao-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #3f3f46;
+    border-radius: 6px;
+    background-color: #2d3748; /* Fundo item escuro */
+    transition: all 0.3s;
+}
+
+.cotacao-item:hover {
+    background-color: #3f3f46;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.cotacao-info {
+    flex: 1;
+}
+
+.cotacao-info strong {
+    font-size: 16px;
+    color: #63b3ed; /* Azul claro p/ destacar */
+    display: block;
+    margin-bottom: 5px;
+}
+
+.cotacao-info p {
+    margin: 3px 0;
+    font-size: 13px;
+    color: #a0aec0; /* Texto secundário claro */
+}
+
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.badge-rascunho {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.badge-finalizada {
+    background-color: #28a745;
+    color: white;
+}
+
+.cotacao-acoes {
+    display: flex;
+    gap: 10px;
+}
+
+.cotacao-acoes button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.3s;
+}
+
+.cotacao-acoes button:first-child {
+    background-color: #1e3a5f;
+    color: white;
+}
+
+.cotacao-acoes button:first-child:hover {
+    background-color: #2d5a8f;
+}
+
+.cotacao-acoes button:last-child {
+    background-color: #dc3545;
+    color: white;
+}
+
+.cotacao-acoes button:last-child:hover {
+    background-color: #c82333;
+}
+
+
+
+/* Notificações */
+.notificacao {
+    position: fixed;
+    top: 20px;
+    right: -400px;
+    background-color: #1e1e24; /* Fundo das notificações */
+    color: #e2e8f0;
+    padding: 15px 20px;
+    border-radius: 6px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    z-index: 2000;
+    min-width: 300px;
+    transition: right 0.3s ease;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.notificacao.show {
+    right: 20px;
+}
+
+.notificacao-success {
+    border-left: 4px solid #48bb78; /* Verde do dark mode */
+}
+
+.notificacao-error {
+    border-left: 4px solid #f56565; /* Vermelho escurecido */
+}
+
+.notificacao-info {
+    border-left: 4px solid #4fd1c5; /* Cíano */
+}
+
+@media print {
+    .modal {
+        display: none !important;
+    }
+}

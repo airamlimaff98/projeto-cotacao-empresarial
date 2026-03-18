@@ -1,0 +1,76 @@
+INSTRUÇÕES PARA ADICIONAR BOTÕES AOS SELECTS
+==============================================
+
+1. ADICIONE O SCRIPT NO HTML (antes de </head>):
+   <script src="gerenciar-selects.js"></script>
+
+2. CENTRO DE CUSTO - Substitua a linha do select por:
+   
+   <div style="display: flex; gap: 5px; flex: 1;">
+       <select id="centroCusto" style="flex: 1;">
+           <!-- opções existentes -->
+       </select>
+       <button onclick="adicionarNovoCentroCusto()" class="btn-add-select" title="Adicionar Centro de Custo">+</button>
+   </div>
+
+3. FORNECEDORES (nos 3 selects da tabela) - Adicione botão após cada select:
+
+   Para CONDEC:
+   <th colspan="3" class="fornecedor condec">
+       <div style="display: flex; gap: 3px; align-items: center;">
+           <select class="select-fornecedor" data-fornecedor="condec" onchange="atualizarFornecedor('condec', this.value)" style="flex: 1;">
+               <!-- opções -->
+           </select>
+           <button onclick="adicionarNovoFornecedor()" class="btn-add-select-small" title="Adicionar Fornecedor">+</button>
+       </div>
+   </th>
+
+   Repita para TELEACO e PREMOLNITOS
+
+4. SOLICITANTE - Substitua o select por:
+
+   <div style="display: flex; gap: 5px;">
+       <select style="flex: 1;">
+           <!-- opções existentes -->
+       </select>
+       <button onclick="adicionarNovoSolicitante()" class="btn-add-select" title="Adicionar Solicitante">+</button>
+   </div>
+
+5. ADICIONE OS ESTILOS NO CSS:
+
+.btn-add-select {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.btn-add-select:hover {
+    background-color: #218838;
+}
+
+.btn-add-select-small {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 2px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.btn-add-select-small:hover {
+    background-color: #218838;
+}
+
+@media print {
+    .btn-add-select,
+    .btn-add-select-small {
+        display: none !important;
+    }
+}

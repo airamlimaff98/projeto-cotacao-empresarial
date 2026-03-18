@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Cotação</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%23FF6B35' rx='12'/><path d='M18 20h4l4 16h16l4-12H24' stroke='%23FFF' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/><circle cx='28' cy='44' r='3' fill='%23FFF'/><circle cx='44' cy='44' r='3' fill='%23FFF'/></svg>">
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    <script src="fornecedores.js"></script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="database.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Cabeçalho -->
+        <div class="header">
+            <div class="logo-container">
+                <div class="logo-icon">ALF</div>
+                <div class="logo-text">GRUPO ALF<br><span>MÁQUINAS E EQUIPAMENTOS</span></div>
+            </div>
+            <div class="header-fields">
+                <div class="field-row">
+                    <label>Número da Cotação:</label>
+                    <div class="input-with-button">
+                        <input type="text" id="numCotacao" readonly style="background-color: #f0f0f0; flex: 1;">
+                        <button class="btn-reset-cotacao" onclick="zerarContadorCotacao()" title="Zerar Contador de Cotação">🔄</button>
+                    </div>
+                </div>
+                <div class="field-row">
+                    <label>Data da Cotação:</label>
+                    <input type="date" id="dataCotacao" readonly style="background-color: #f0f0f0;">
+                </div>
+                <div class="field-row">
+                    <label>Obra / Centro de Custo:</label>
+                    <div class="input-with-button">
+                        <select id="centroCusto">
+                            <option value="">Selecione</option>
+                            <option value="3P ENERGIA - NOVA DESCOBERTA">3P ENERGIA - NOVA DESCOBERTA</option>
+                            <option value="A SERVIÇO - SWEET FRUIT">A SERVIÇO - SWEET FRUIT</option>
+                            <option value="ADEVANILSO">ADEVANILSO</option>
+                            <option value="ATIVA MINERAÇÃO">ATIVA MINERAÇÃO</option>
+                            <option value="AUDILAN F.">AUDILAN F.</option>
+                            <option value="BRENNAND - UMC">BRENNAND - UMC</option>
+                            <option value="COMBRITA">COMBRITA</option>
+                            <option value="COND. PORTO FINO">COND. PORTO FINO</option>
+                            <option value="CONDEC">CONDEC</option>
+                            <option value="CVS">CVS</option>
+                            <option value="DINC - ESTRADA">DINC - ESTRADA</option>
+                            <option value="DRENAGEM - SWEET FRUIT">DRENAGEM - SWEET FRUIT</option>
+                            <option value="EH06 LOCAÇÕES - ARIZONA">EH06 LOCAÇÕES - ARIZONA</option>
+                            <option value="ESCRITORIO">ESCRITORIO</option>
+                            <option value="ETEX GYPSUM">ETEX GYPSUM</option>
+                            <option value="FABRICIO">FABRICIO</option>
+                            <option value="FAZENDA DAN">FAZENDA DAN</option>
+                            <option value="FAZENDA TERRA PROMETIDA">FAZENDA TERRA PROMETIDA</option>
+                            <option value="GABRIEL - GVS CONSTRUTORA">GABRIEL - GVS CONSTRUTORA</option>
+                            <option value="INOXTEC - ATERRO">INOXTEC - ATERRO</option>
+                            <option value="JOCA">JOCA</option>
+                            <option value="JOCA - MATSUMOTO">JOCA - MATSUMOTO</option>
+                            <option value="JPW - SE TEREZINA">JPW - SE TEREZINA</option>
+                            <option value="LOCASERV">LOCASERV</option>
+                            <option value="LOTE PONTAL">LOTE PONTAL</option>
+                            <option value="LOTEAMENTO PETROVILLE">LOTEAMENTO PETROVILLE</option>
+                            <option value="LOTEAMENTO SANTA BARBARA">LOTEAMENTO SANTA BARBARA</option>
+                            <option value="MINERADORA JAGUARARI">MINERADORA JAGUARARI</option>
+                            <option value="NALDI - PORTOFINO">NALDI - PORTOFINO</option>
+                            <option value="NARDINI JUAZEIRO">NARDINI JUAZEIRO</option>
+                            <option value="OFICINA">OFICINA</option>
+                            <option value="PEPSICO">PEPSICO</option>
+                            <option value="PETROMUDAS">PETROMUDAS</option>
+                            <option value="PORTO FINO">PORTO FINO</option>
+                            <option value="POSTO SANTANA">POSTO SANTANA</option>
+                            <option value="SEDE ALF">SEDE ALF</option>
+                            <option value="SOL DO SÃO FRANCISCO">SOL DO SÃO FRANCISCO</option>
+                            <option value="SWEET FRUIT">SWEET FRUIT</option>
+                            <option value="SWEET FRUIT - CASA NOVA">SWEET FRUIT - CASA NOVA</option>
+                            <option value="TRANSPORTADORA CRUZ DE MALTA">TRANSPORTADORA CRUZ DE MALTA</option>
+                            <option value="VCA">VCA</option>
+                            <option value="TULIO - PORTO FINO">TULIO - PORTO FINO</option>
+                            <option value="VCA - JUAZEIRO">VCA - JUAZEIRO</option>
+                            <option value="VERTICAL">VERTICAL</option>
+                            <option value="ZANLORENZI">ZANLORENZI</option>
+                            <option value="REPUBLICA 01 - COHAB">REPUBLICA 01 - COHAB</option>
+                            <option value="REPUBLICA 02 - V.DEBORA">REPUBLICA 02 - V.DEBORA</option>
+                            <option value="A.L.F MATRIZ">A.L.F MATRIZ</option>
+                            <option value="CENTRO DE MANUTENÇÃO">CENTRO DE MANUTENÇÃO</option>
+                            <option value="GREEN VALLE">GREEN VALLE</option>
+                            <option value="SSF1 - TERRAPLENAGEM">SSF1 - TERRAPLENAGEM</option>
+                            <option value="BRENNAND PROJETOS">BRENNAND PROJETOS</option>
+                            <option value="SWEET FRUITS - RESERVATORIO">SWEET FRUITS - RESERVATORIO</option>
+                            <option value="SSF1 - LOCAÇÕES DE EQUIPAMENTOS">SSF1 - LOCAÇÕES DE EQUIPAMENTOS</option>
+                            <option value="NARDINI - LOCAÇÕES DE EQUIPAMENTOS">NARDINI - LOCAÇÕES DE EQUIPAMENTOS</option>
+                            <option value="DINC - LOCAÇÕES DE EQUIPAMENTOS">DINC - LOCAÇÕES DE EQUIPAMENTOS</option>
+                            <option value="HTB - AEROPORTO">HTB - AEROPORTO</option>
+                            <option value="BRENNAND - ELETRICA">BRENNAND - ELETRICA</option>
+                            <option value="JPW - SE COREMAS">JPW - SE COREMAS</option>
+                            <option value="GNL BRASIL - COPERGÁS">GNL BRASIL - COPERGÁS</option>
+                            <option value="CALISTO SABINO - LOCAÇÕES DE EQUIPAMENTOS">CALISTO SABINO - LOCAÇÕES DE EQUIPAMENTOS</option>
+                            <option value="MGS - SOLAR JUAZEIRO">MGS - SOLAR JUAZEIRO</option>
+                            <option value="MINERADORA JAGUARARI - LOCAÇÕES DE EQUIPAMENTOS">MINERADORA JAGUARARI - LOCAÇÕES DE EQUIPAMENTOS</option>
+                            <option value="EDECON - LOCAÇÕES DE EQUIPAMENTOS">EDECON - LOCAÇÕES DE EQUIPAMENTOS</option>
+                            <option value="EZEQUIEL - LOCAÇÕES DE EQUIPAMENTOS">EZEQUIEL - LOCAÇÕES DE EQUIPAMENTOS</option>
+                            <option value="RITA FILGUEIRA">RITA FILGUEIRA</option>
+                        </select>
+                        <button class="btn-add-select" onclick="adicionarNovoCentroCusto()" title="Adicionar Centro de Custo">+</button>
+                    </div>
+                </div>
+                <div class="field-row">
+                    <label>Grau de Prioridade:</label>
+                    <select id="prioridade">
+                        <option value="">Selecione</option>
+                        <option value="baixa">Baixa</option>
+                        <option value="media">Média</option>
+                        <option value="alta">Alta</option>
+                        <option value="urgente">Urgente</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Título -->
+        <h1 class="title">MAPA DE COTAÇÃO</h1>
+
+        <!-- Tabela -->
+        <div class="table-wrapper">
+        <table class="cotacao-table">
+            <thead>
+                <tr class="header-row">
+                    <th rowspan="2">Item</th>
+                    <th rowspan="2">Qtd</th>
+                    <th rowspan="2">Und</th>
+                    <th colspan="3" class="fornecedor condec">
+                        <div class="fornecedor-header">
+                            <select class="select-fornecedor" data-fornecedor="condec" onchange="atualizarFornecedor('condec', this.value)">
+                            </select>
+                            <button class="btn-add-fornecedor" onclick="adicionarNovoFornecedor()" title="Adicionar Fornecedor">+</button>
+                        </div>
+                    </th>
+                    <th colspan="3" class="fornecedor teleaco">
+                        <div class="fornecedor-header">
+                            <select class="select-fornecedor" data-fornecedor="teleaco" onchange="atualizarFornecedor('teleaco', this.value)">
+                            </select>
+                            <button class="btn-add-fornecedor" onclick="adicionarNovoFornecedor()" title="Adicionar Fornecedor">+</button>
+                        </div>
+                    </th>
+                    <th colspan="3" class="fornecedor premolnitos">
+                        <div class="fornecedor-header">
+                            <select class="select-fornecedor" data-fornecedor="premolnitos" onchange="atualizarFornecedor('premolnitos', this.value)">
+                            </select>
+                            <button class="btn-add-fornecedor" onclick="adicionarNovoFornecedor()" title="Adicionar Fornecedor">+</button>
+                        </div>
+                    </th>
+                    <th colspan="3" class="fornecedor melhor">Melhor Preço</th>
+                </tr>
+                <tr class="subheader-row">
+                    <th class="condec">Unit. (R$)</th>
+                    <th class="condec">Desconto</th>
+                    <th class="condec">Total (R$)</th>
+                    <th class="teleaco">Unit. (R$)</th>
+                    <th class="teleaco">Desconto</th>
+                    <th class="teleaco">Total (R$)</th>
+                    <th class="premolnitos">Unit. (R$)</th>
+                    <th class="premolnitos">Desconto</th>
+                    <th class="premolnitos">Total (R$)</th>
+                    <th class="melhor">Unit. (R$)</th>
+                    <th class="melhor">Desconto</th>
+                    <th class="melhor">Total (R$)</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+            </tbody>
+            <tfoot>
+                <tr class="total-row">
+                    <td colspan="3"><strong>SUBTOTAL ITENS</strong></td>
+                    <td colspan="2"></td>
+                    <td class="condec total-value" id="subtotalCondec">R$ 0,00</td>
+                    <td colspan="2"></td>
+                    <td class="teleaco total-value" id="subtotalTeleaco">R$ 0,00</td>
+                    <td colspan="2"></td>
+                    <td class="premolnitos total-value" id="subtotalPremolnitos">R$ 0,00</td>
+                    <td colspan="2"></td>
+                    <td class="melhor total-value" id="subtotalMelhor">R$ 0,00</td>
+                </tr>
+
+                <tr class="pgto-row" id="linhaPgto">
+                    <td colspan="3"><strong>CONDIÇÃO DE PGTO</strong></td>
+                    <td colspan="2" style="border:none;"></td>
+                    <td class="condec"><input type="text" class="pgto-input" data-fornecedor="condec" placeholder="Ex: 30/60/90 dias"></td>
+                    <td colspan="2" style="border:none;"></td>
+                    <td class="teleaco"><input type="text" class="pgto-input" data-fornecedor="teleaco" placeholder="Ex: À vista"></td>
+                    <td colspan="2" style="border:none;"></td>
+                    <td class="premolnitos"><input type="text" class="pgto-input" data-fornecedor="premolnitos" placeholder="Ex: 15 dias"></td>
+                    <td colspan="2" style="border:none;"></td>
+                    <td class="melhor pgto-melhor-value" id="pgtoMelhor">-</td>
+                </tr>
+                <tr class="total-final-row">
+                    <td colspan="3"><strong>TOTAL LÍQUIDO FINAL</strong></td>
+                    <td colspan="2" style="border:none;"></td>
+                    <td class="condec total-final-value" id="totalCondec">R$ 0,00</td>
+                    <td colspan="2" style="border:none;"></td>
+                    <td class="teleaco total-final-value" id="totalTeleaco">R$ 0,00</td>
+                    <td colspan="2" style="border:none;"></td>
+                    <td class="premolnitos total-final-value" id="totalPremolnitos">R$ 0,00</td>
+                    <td colspan="2" style="border:none;"></td>
+                    <td class="melhor total-final-value" id="totalMelhor">R$ 0,00</td>
+                </tr>
+            </tfoot>
+        </table>
+        </div>
+        
+        <!-- Painel Executivo para PDF -->
+        <div class="painel-executivo">
+            <div class="resumo-vencedor">
+                <h3>🏆 Resumo Executivo da Cotação</h3>
+                <div id="textoResumoVencedor">
+                    <em>Aguardando cálculo para exibir o fornecedor vencedor...</em>
+                </div>
+            </div>
+            <div class="justificativa-compra">
+                <h3>📄 Parecer / Justificativa de Compra</h3>
+                <textarea class="textarea-justificativa" placeholder="Se necessário, justifique aqui a escolha (Ex: Menor prazo de entrega, qualidade técnica referenciada, urgência da obra, etc). Este texto sairá no PDF para a diretoria." rows="3"></textarea>
+            </div>
+        </div>
+
+        <!-- Botões -->
+        <div class="botoes-acao">
+            <button class="btn-add" onclick="adicionarItem()">+ Adicionar Item</button>
+            <button class="btn-salvar" onclick="salvarCotacao('rascunho')">Salvar Cotação</button>
+            <button class="btn-carregar" onclick="abrirModalCotacoes()">Carregar Cotação</button>
+            <button class="btn-limpar" onclick="limparCotacao()">Limpar Cotação</button>
+            <button class="btn-calcular" onclick="calcularTudo()">Calcular Totais</button>
+            <button class="btn-pdf" onclick="gerarPDF()">Gerar PDF</button>
+        </div>
+
+        <!-- Assinaturas Formais (Redesenhadas) -->
+        <div class="assinaturas-diretoria">
+            <div class="assinatura-box">
+                <div class="assinatura-linha-vazia"></div>
+                <div class="assinatura-cargo">
+                    <select>
+                        <option value="">(Selecione Solicitante)</option>
+                        <option value="Bruno Éricles">Bruno Éricles</option>
+                        <option value="Airam Filgueira">Airam Filgueira</option>
+                        <option value="Isaac Cabral">Isaac Cabral</option>
+                        <option value="Adevanilso">Adevanilso</option>
+                        <option value="José dos Santos">José dos Santos</option>
+                        <option value="Ledivan Enc.">Ledivan Enc.</option>
+                        <option value="Marcos Barros">Marcos Barros</option>
+                    </select>
+                </div>
+                <div class="assinatura-label">Solicitante</div>
+            </div>
+            
+            <div class="assinatura-box">
+                <div class="assinatura-linha-vazia"></div>
+                <div class="assinatura-cargo">
+                    <input type="text" value="Airam Filho" readonly>
+                </div>
+                <div class="assinatura-label">Setor de Compras</div>
+            </div>
+            
+            <div class="assinatura-box">
+                <div class="assinatura-linha-vazia"></div>
+                <div class="assinatura-cargo">
+                    <input type="text" value="Direção / Gerência" readonly>
+                </div>
+                <div class="assinatura-label">APROVAÇÃO FINAL PARA COMPRA</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Listar Cotações -->
+    <div id="modalCotacoes" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Carregar Cotação</h2>
+                <span class="close" onclick="fecharModalCotacoes()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="filtros">
+                    <select id="filtroStatus">
+                        <option value="">Todos os Status</option>
+                        <option value="rascunho">Rascunho</option>
+                        <option value="finalizada">Finalizada</option>
+                    </select>
+                    <select id="filtroCentroCusto">
+                        <option value="">Todos os Centros de Custo</option>
+                    </select>
+                    <button onclick="aplicarFiltros()">Filtrar</button>
+                </div>
+                <div id="listaCotacoes" class="lista-cotacoes">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="gerenciar-selects.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
