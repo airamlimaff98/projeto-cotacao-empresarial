@@ -31,8 +31,8 @@ async function obterProximoNumero() {
 
 // Coletar dados da cotação atual
 function coletarDadosCotacao() {
-    const solicitanteSelect = document.querySelector('.assinaturas select');
-    const aprovacaoInputs = document.querySelectorAll('.assinatura-campo input');
+    const solicitanteSelect = document.querySelector('.assinaturas-diretoria select');
+    const aprovacaoInputs = document.querySelectorAll('.assinatura-cargo input');
     
     // Sempre usar a data atual
     const hoje = new Date();
@@ -44,9 +44,21 @@ function coletarDadosCotacao() {
         centroCusto: document.getElementById('centroCusto').value,
         prioridade: document.getElementById('prioridade').value,
         fornecedores: {
-            condec: document.querySelector('.select-fornecedor[data-fornecedor="condec"]')?.value || 'N/T',
-            teleaco: document.querySelector('.select-fornecedor[data-fornecedor="teleaco"]')?.value || 'N/T',
-            premolnitos: document.querySelector('.select-fornecedor[data-fornecedor="premolnitos"]')?.value || 'N/T'
+            condec: { 
+                nome: document.querySelector('.select-fornecedor[data-fornecedor="condec"]')?.value || 'N/T',
+                frete: parseFloat(document.querySelector('.condec .frete-input')?.value) || 0,
+                pgto: document.querySelector('.condec .pgto-input')?.value || ''
+            },
+            teleaco: { 
+                nome: document.querySelector('.select-fornecedor[data-fornecedor="teleaco"]')?.value || 'N/T',
+                frete: parseFloat(document.querySelector('.teleaco .frete-input')?.value) || 0,
+                pgto: document.querySelector('.teleaco .pgto-input')?.value || ''
+            },
+            premolnitos: { 
+                nome: document.querySelector('.select-fornecedor[data-fornecedor="premolnitos"]')?.value || 'N/T',
+                frete: parseFloat(document.querySelector('.premolnitos .frete-input')?.value) || 0,
+                pgto: document.querySelector('.premolnitos .pgto-input')?.value || ''
+            }
         },
         itens: [],
         totais: {
@@ -57,7 +69,7 @@ function coletarDadosCotacao() {
         },
         solicitante: solicitanteSelect?.value || '',
         autor: 'Airam Filho',
-        aprovacao: aprovacaoInputs[2]?.value || '',
+        aprovacao: aprovacaoInputs[1]?.value || '',
         criadoEm: firebase.database.ServerValue.TIMESTAMP,
         atualizadoEm: firebase.database.ServerValue.TIMESTAMP
     };
@@ -179,13 +191,22 @@ function preencherFormulario(dados) {
     
     // Fornecedores
     if (dados.fornecedores) {
-        const setForn = (nome, val) => {
-            const el = document.querySelector(`.select-fornecedor[data-fornecedor="${nome}"]`);
-            if (el) el.value = val || '';
-        };
-        setForn('condec', dados.fornecedores.condec);
-        setForn('teleaco', dados.fornecedores.teleaco);
-        setForn('premolnitos', dados.fornecedores.premolnitos);
+        ['condec', 'teleaco', 'premolnitos'].forEach(fKey => {
+            const fData = dados.fornecedores[fKey];
+            const nomeStr = typeof fData === 'object' ? fData.nome : fData; // Fallback para formato antigo
+
+            const selectF = document.querySelector(`.select-fornecedor[data-fornecedor="${fKey}"]`);
+            if (selectF) selectF.value = nomeStr || 'N/T';
+
+            // Carregar frete e pgto se existirem (novos dados)
+            if (typeof fData === 'object') {
+                const freteInp = document.querySelector(`.${fKey} .frete-input`);
+                if (freteInp) freteInp.value = fData.frete || 0;
+
+                const pgtoInp = document.querySelector(`.${fKey} .pgto-input`);
+                if (pgtoInp) pgtoInp.value = fData.pgto || '';
+            }
+        });
     }
     
     // Limpar tabela atual para recriar conforme a cotação salva
@@ -250,13 +271,14 @@ function preencherFormulario(dados) {
     if (typeof calcularTudo === 'function') calcularTudo();
     
     // Assinaturas
-    const solicitanteSelect = document.querySelector('.assinaturas select');
+    const solicitanteSelect = document.querySelector('.assinaturas-diretoria select');
     if (solicitanteSelect) solicitanteSelect.value = dados.solicitante || '';
 
-    const inputsAssinatura = document.querySelectorAll('.assinatura-campo input');
-    // Verifica se existe o terceiro input (índice 2) antes de tentar acessar
-    if (inputsAssinatura.length > 2) {
-        inputsAssinatura[2].value = dados.aprovacao || '';
+    const inputsAssinatura = document.querySelectorAll('.assinatura-cargo input');
+    // Força preenchimento se houver dados
+    if (inputsAssinatura.length > 1) {
+        // O index 1 é o campo de Aprovação (Direção / Gerência)
+        if (dados.aprovacao) inputsAssinatura[1].value = dados.aprovacao;
     }
 }
 

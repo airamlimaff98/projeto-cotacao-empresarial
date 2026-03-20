@@ -1,23 +1,43 @@
+:root {
+    --bg-principal: #121212;
+    --bg-secundario: #1e1e24;
+    --texto-claro: #e2e8f0;
+    --texto-suavizado: #a0aec0;
+    --cor-borda: #3f3f46;
+    --cor-input-bg: #2d3748;
+    --cor-sucesso: #28a745;
+    --cor-sucesso-hover: #218838;
+}
+
+.frete-row,
+.total-row {
+    display: none !important;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body, html {
+body,
+html {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #121212; /* Fundo principal escuro */
+    background-color: var(--bg-principal);
+    /* Fundo principal escuro */
     padding: 0;
     margin: 0;
     width: 100%;
     min-height: 100vh;
-    color: #e2e8f0; /* Texto claro */
+    color: var(--texto-claro);
+    /* Texto claro */
 }
 
 .container {
     width: 100%;
     min-height: 100vh;
-    background-color: #1e1e24; /* Fundo da estrutura central escuro */
+    background-color: var(--bg-secundario);
+    /* Fundo da estrutura central escuro */
     padding: 10px 15px;
     box-sizing: border-box;
     display: flex;
@@ -30,21 +50,25 @@ body, html {
     gap: 15px;
     margin-bottom: 10px;
     padding-bottom: 15px;
-    border-bottom: 1px solid #3f3f46; /* Divisória para modo escuro */
+    border-bottom: 1px solid var(--cor-borda);
+    /* Divisória para modo escuro */
     flex-shrink: 0;
 }
 
 .header-fields {
     flex-grow: 1;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(4, 1fr);
     gap: 10px;
+    align-items: center;
 }
 
 .field-row {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 10px;
+    text-align: center;
+    gap: 5px;
 }
 
 .input-with-button {
@@ -129,26 +153,36 @@ body, html {
 }
 
 @media print {
-    .btn-add-select, .btn-add-select-small { display: none !important; }
+
+    .btn-add-select,
+    .btn-add-select-small {
+        display: none !important;
+    }
 }
 
 .field-row label {
     font-size: 13px;
     font-weight: 600;
     white-space: nowrap;
-    color: #a0aec0; /* Cor do texto suavizada no tema escuro */
+    text-align: center;
+    color: var(--texto-suavizado);
+    /* Cor do texto suavizada no tema escuro */
 }
 
 .field-row input,
 .field-row select {
     flex-grow: 1;
     padding: 8px 10px;
-    border: 1px solid #4a5568; /* Borda visível no modo escuro */
+    border: 1px solid var(--cor-borda);
+    /* Borda visível no modo escuro */
     border-radius: 6px;
     font-size: 13px;
+    text-align: center;
     transition: all 0.2s ease;
-    background-color: #2d3748; /* Fundo dos inputs */
-    color: #f7fafc; /* Texto interno input claro */
+    background-color: var(--cor-input-bg);
+    /* Fundo dos inputs */
+    color: var(--texto-claro);
+    /* Texto interno input claro */
 }
 
 .field-row input:focus,
@@ -159,18 +193,22 @@ body, html {
 }
 
 /* Base Global para evitar selects/inputs despadronizados (Assinaturas, Filtros, Datas, etc) */
-select, 
-input[type="text"], 
-input[type="date"], 
+select,
+input[type="text"],
+input[type="date"],
 input[type="number"] {
     padding: 6px 10px;
-    border: 1px solid #4a5568; 
+    border: 1px solid var(--cor-borda);
     border-radius: 6px;
     font-size: 13px;
+    text-align: center;
     transition: all 0.2s ease;
-    background-color: #2d3748 !important; /* Fundo padrão Dark Mode */
-    color: #f7fafc !important; /* Texto Branco */
-    color-scheme: dark; /* Força o dropdown nativo do navegador a ser escuro */
+    background-color: var(--cor-input-bg) !important;
+    /* Fundo padrão Dark Mode */
+    color: var(--texto-claro) !important;
+    /* Texto Branco */
+    color-scheme: dark;
+    /* Força o dropdown nativo do navegador a ser escuro */
     outline: none;
     font-family: inherit;
 }
@@ -181,9 +219,9 @@ select option {
     color: #f7fafc !important;
 }
 
-select:focus, 
-input[type="text"]:focus, 
-input[type="date"]:focus, 
+select:focus,
+input[type="text"]:focus,
+input[type="date"]:focus,
 input[type="number"]:focus {
     border-color: #3182ce;
     box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.15);
@@ -191,15 +229,18 @@ input[type="number"]:focus {
 
 /* Tratamento especial para inputs bloqueados (readonly) como 'Airam Filho' e 'Direção' */
 input[readonly] {
-    background-color: #1e1e24 !important; /* Mais escuro para mostrar que está travado */
-    color: #a0aec0 !important; /* Texto mais apagado */
+    background-color: #1e1e24 !important;
+    /* Mais escuro para mostrar que está travado */
+    color: #a0aec0 !important;
+    /* Texto mais apagado */
     cursor: default;
 }
 
 /* Título */
 .title {
     text-align: center;
-    color: rgb(99, 179, 237); /* Azul realçado para escuro */
+    color: rgb(99, 179, 237);
+    /* Azul realçado para escuro */
     font-size: 22px;
     margin: 10px 0 15px;
     font-weight: 700;
@@ -209,12 +250,15 @@ input[readonly] {
 
 /* Tabela Workspace (Area que preenche espaço restante) */
 .table-wrapper {
-    flex-grow: 1; /* Pega todo o espaço restante do container flex */
-    overflow-y: auto; /* Permite rolar APENAS a tabela/wrapper de tabela */
+    flex-grow: 1;
+    /* Pega todo o espaço restante do container flex */
+    overflow-y: auto;
+    /* Permite rolar APENAS a tabela/wrapper de tabela */
     overflow-x: auto;
     border: 1px solid #3f3f46;
     border-radius: 6px;
-    margin-bottom: 15px; /* Libera espaço pro flex calcular a rodapé */
+    margin-bottom: 15px;
+    /* Libera espaço pro flex calcular a rodapé */
 }
 
 /* Tabela */
@@ -225,12 +269,14 @@ input[readonly] {
     table-layout: fixed;
     height: 100%;
 }
+
 /* Faz o thead e o footer "grudarem" na visão durante rolagem interna */
 .cotacao-table thead {
     position: sticky;
     top: 0;
     z-index: 5;
 }
+
 .cotacao-table tfoot {
     position: sticky;
     bottom: 0;
@@ -239,10 +285,10 @@ input[readonly] {
 
 .cotacao-table th,
 .cotacao-table td {
-    border: 1px solid #3f3f46; /* Borda visível com fundo escudo */
+    border: 1px solid #ccc !important; /* Regra 1: Grade profissional */
     padding: 10px 6px;
     text-align: center;
-    overflow: hidden;
+    overflow: visible !important;
     vertical-align: middle;
 }
 
@@ -262,11 +308,11 @@ input[readonly] {
 }
 
 .header-row th {
-    background-color: #1a202c; /* Fundo Dark na head da Tabela */
-    color: #e2e8f0;
+    background-color: #1e3a5f;
+    color: #ffffff;
     font-weight: 600;
     padding: 12px 6px;
-    border-color: #2d3748;
+    border-color: #ccc !important;
 }
 
 .select-fornecedor {
@@ -274,16 +320,17 @@ input[readonly] {
     padding: 6px;
     font-size: 12px;
     font-weight: bold;
+    text-align: center;
     border: 1px solid rgb(47, 3, 169);
     border-radius: 4px;
-    background-color: #2d3748;
-    color: #f7fafc;
+    background-color: var(--cor-input-bg);
+    color: var(--texto-claro);
     cursor: pointer;
     transition: border-color 0.2s;
 }
 
 .fornecedor-print-value {
-    color: #ffffff0d !important;
+    color: #ffffff !important;
     font-weight: bold;
     text-transform: uppercase;
     text-align: center;
@@ -329,54 +376,56 @@ input[readonly] {
     font-size: 11px;
 }
 
-/* Cores dos fornecedores no cabeçalho */
-.condec {
-    background-color: #0d5ccb; /* Azul Escuro */
-}
-
-.teleaco {
-    background-color: #0d5ccb; /* Marrom Laranjado Escuro */
-}
-
+/* Base padronizada para as colunas de Fornecedores */
+.condec,
+.teleaco,
 .premolnitos {
-    background-color: #0d5ccb; /* Verde Escuro */
+    background-color: #1e3a5f;
+    color: #ffffff;
 }
 
+/* Coluna Melhor Preço sempre em destaque */
 .melhor {
-    background-color: #37ae5d; /* Cinza Escuro */
+    background-color: #37ae5d;
+    /* Verde Forte */
 }
 
 .cotacao-table tbody tr {
     transition: background-color 0.15s;
 }
 
-/* Base transparente para permitir cores combinadas */
 .cotacao-table tbody td {
     background-color: transparent;
+    overflow: visible;
+    position: relative;
+    z-index: 1;
 }
 
-/* Zebrado Translúcido nos blocos do Fornecedor para Leitura Fácil */
-.cotacao-table tbody tr:nth-child(even) td.condec { background-color: rgba(255, 255, 255, 0.05); }
-.cotacao-table tbody tr:nth-child(odd) td.condec { background-color: rgba(255, 255, 255, 0.05); }
-/* Fundo levemente translúcido para as colunas dos fornecedores para melhor leitura */
+/* Fundo unificado translúcido para os três fornecedores base para leitura unificada e neutra */
 .cotacao-table tbody td.condec,
 .cotacao-table tbody td.teleaco,
-.cotacao-table tbody td.premolnitos,
-.cotacao-table tbody td.melhor {
-    background-color: rgba(255, 255, 255, 0.05);
+.cotacao-table tbody td.premolnitos {
+    background-color: rgba(255, 255, 255, 0.06);
 }
 
-.cotacao-table tbody tr:nth-child(even) td.teleaco { background-color: rgba(255, 255, 255, 0.05); }
-.cotacao-table tbody tr:nth-child(odd) td.teleaco { background-color: rgba(255, 255, 255, 0.05); }
+.cotacao-table tbody tr:nth-child(even) td.condec,
+.cotacao-table tbody tr:nth-child(even) td.teleaco,
+.cotacao-table tbody tr:nth-child(even) td.premolnitos {
+    background-color: rgba(255, 255, 255, 0.03);
+}
 
-.cotacao-table tbody tr:nth-child(even) td.premolnitos { background-color: rgba(255, 255, 255, 0.05); }
-.cotacao-table tbody tr:nth-child(odd) td.premolnitos { background-color: rgba(255, 255, 255, 0.05); }
+/* Fundo esverdeado para a coluna 'Melhor' */
+.cotacao-table tbody td.melhor {
+    background-color: rgba(72, 187, 120, 0.15);
+}
 
-.cotacao-table tbody tr:nth-child(even) td.melhor { background-color: #ffffff0d; }
-.cotacao-table tbody tr:nth-child(odd) td.melhor { background-color: rgba(255, 255, 255, 0.05); }
+.cotacao-table tbody tr:nth-child(even) td.melhor {
+    background-color: rgba(72, 187, 120, 0.08);
+}
 
 .cotacao-table tbody tr:hover td {
-    background-color: rgba(255, 255, 255, 0.1) !important; /* Efeito hover noturno uniforme */
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    /* Efeito hover noturno uniforme */
 }
 
 .cotacao-table tbody input,
@@ -390,20 +439,60 @@ input[readonly] {
     box-sizing: border-box;
     transition: all 0.2s;
     background-color: #ffffff0d;
-    color: #fbfafa;
+    color: #ffffff !important;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .cotacao-table tbody input:focus,
 .cotacao-table tbody select:focus {
     outline: none;
-    border-color: #63b3ed;
-    background-color: #ffffff;
-    box-shadow: 0 0 0 2px rgba(14, 198, 198, 0.2);
+    border-color: #a0aec0;
+    background-color: #2d3748;
+    color: #ffffff;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+/* Estilo unificado para rodapé (Valores, Frete, Total) */
+.total-value,
+.total-final-value,
+.frete-input {
+    font-size: 13px !important;
+    text-align: center !important;
+    font-weight: bold !important;
+}
+
+.frete-input {
+    width: 100% !important;
+    background-color: transparent !important;
+    border: none !important;
+    color: inherit !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+.frete-input:focus {
+    border: none !important;
+    border-bottom: 1px solid #a0aec0 !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+    border-radius: 0 !important;
+}
+
+/* Remove botões de setinhas (spinners) azuis nativos no navegador inteiro */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
 }
 
 .cotacao-table tbody .unit-input {
-    text-align: right;
-    padding-right: 4px;
+    text-align: center;
 }
 
 .cotacao-table tbody .qtd-input {
@@ -422,22 +511,48 @@ input[readonly] {
     font-weight: 600;
     color: #e2e8f0;
     background-color: #f8f4f40d !important;
+    overflow: visible;
+    min-width: 70px;
+    padding: 4px 3px;
 }
 
 .melhor-preco {
-    background-color: #276749 !important; /* Verde mais escuro do tema noturno */
-    font-weight: 700;
-    color: #c6f6d5; /* Texto Verde claro */
-    border-color: #67a481 !important; /* Borda Verde médio */
+    background-color: #e8f5e9 !important;
+    font-weight: 700 !important;
+    color: #1b5e20 !important;
+    border: 1px solid #ccc !important;
     transition: all 0.2s;
+}
+
+/* CONTRASTES: Garante que inputs e textos DENTRO do destaque verde sejam SEMPRE legíveis */
+.melhor-preco input,
+.melhor-preco select,
+td.melhor-preco input,
+td.melhor-preco select {
+    color: #1b5e20 !important;
+    background-color: rgba(255,255,255,0.5) !important;
+    border-color: #4caf50 !important;
+}
+
+.melhor-preco input:focus,
+td.melhor-preco input:focus {
+    color: #000000 !important;
+    background-color: #ffffff !important;
 }
 
 /* Rodapé da tabela */
 .total-row td,
-.frete-row td,
+.frete-row td {
+    border: 1px solid #ccc !important;
+    background-color: #2d3748;
+    color: #e2e8f0;
+    font-weight: 600;
+}
+
 .total-final-row td {
+    border: 1px solid #ccc !important;
     font-weight: bold;
-    background-color: #2d3748; /* Escuro */
+    background-color: #2d3748;
     color: #e2e8f0;
 }
 
@@ -446,13 +561,7 @@ input[readonly] {
     font-weight: bold;
 }
 
-.frete-input {
-    width: 100%;
-    padding: 5px;
-    border: 1px solid #ccc;
-    text-align: center;
-    font-size: 12px;
-}
+/* O frete-input já foi unificado lá em cima com as regras de tabelas, o CSS base atua aqui também. */
 
 /* Botoes Adicionar e Ações Fixas */
 .botoes-acao {
@@ -462,10 +571,12 @@ input[readonly] {
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    background-color: #1e1e24; /* Fundo rodapé para combinar com a estrutura */
+    background-color: #1e1e24;
+    /* Fundo rodapé para combinar com a estrutura */
     padding: 15px;
     border-radius: 8px;
-    box-shadow: 0 -5px 15px rgba(0,0,0,0.4); /* Sombra Dark Mode */
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.4);
+    /* Sombra Dark Mode */
     flex-shrink: 0;
 }
 
@@ -558,7 +669,8 @@ input[readonly] {
     gap: 15px;
     margin: 10px 0;
     padding: 10px;
-    background-color: #1e1e24; /* Dark Mode */
+    background-color: #1e1e24;
+    /* Dark Mode */
     border: 1px solid #3f3f46;
     border-radius: 6px;
 }
@@ -578,25 +690,28 @@ input[readonly] {
 
 #textoResumoVencedor {
     font-size: 13px;
-    color: #e2e8f0;
+    color: var(--texto-claro);
     padding: 10px;
-    background-color: #2d3748;
+    background-color: var(--cor-input-bg);
     border-radius: 6px;
     flex-grow: 1;
     display: flex;
     align-items: center;
+    text-align: center;
+    justify-content: center;
     line-height: 1.5;
 }
 
 .justificativa-compra .textarea-justificativa {
     width: 100%;
-    background-color: #2d3748;
-    color: #e2e8f0;
-    border: 1px solid #4a5568;
+    background-color: var(--cor-input-bg);
+    color: var(--texto-claro);
+    border: 1px solid var(--cor-borda);
     border-radius: 6px;
     padding: 10px;
     font-family: inherit;
     font-size: 13px;
+    text-align: center;
     resize: vertical;
 }
 
@@ -663,21 +778,22 @@ input[readonly] {
     color: #a0aec0;
 }
 
-/* Campos Livres na Tabela (Frete e Pgto) */
-.frete-input, .pgto-input {
+/* Campos Livres na Tabela (Frete) */
+.frete-input {
     width: 100%;
     height: 100%;
     background: transparent;
-    border: 1px solid #4a5568;
-    color: #e2e8f0;
+    border: 1px solid var(--cor-borda);
+    color: var(--texto-claro);
     text-align: center;
     font-size: 11px;
     padding: 3px;
     border-radius: 3px;
     box-sizing: border-box;
 }
-.frete-input:focus, .pgto-input:focus {
-    background-color: #2d3748;
+
+.frete-input:focus {
+    background-color: var(--cor-input-bg);
 }
 
 /* Responsividade */
@@ -685,7 +801,7 @@ input[readonly] {
     .cotacao-table {
         font-size: 11px;
     }
-    
+
     .cotacao-table th,
     .cotacao-table td {
         padding: 6px 3px;
@@ -696,25 +812,41 @@ input[readonly] {
     .header-fields {
         grid-template-columns: 1fr;
     }
-    
+
+    .field-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .input-with-button {
+        width: 100%;
+    }
+
+    .field-row input,
+    .field-row select {
+        width: 100%;
+    }
+
     .assinaturas {
         grid-template-columns: 1fr;
     }
-    
+
     .botoes-acao {
         flex-direction: column;
     }
-    
+
     .cotacao-table {
         font-size: 10px;
         display: block;
         overflow-x: auto;
     }
 }
+
 @media print {
 
     /* =============================================
-       CLEAN MINIMALIST PDF THEME
+       CLEAN MINIMALIST PDF THEME - CONTRAST FIX
        ============================================= */
 
     @page {
@@ -722,12 +854,22 @@ input[readonly] {
         margin: 8mm;
     }
 
+    /* Evitar quebra no meio da linha e dos quadros */
+    tr,
+    .assinatura-box,
+    .painel-executivo {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
     * {
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact !important;
     }
 
-    html, body {
+    html,
+    body,
+    .container {
         padding: 0;
         margin: 0;
         background: #ffffff !important;
@@ -735,30 +877,36 @@ input[readonly] {
         height: auto;
         display: block;
         font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
-        color: #111827 !important;
-    }
-
-    .container {
+        color: #000000 !important;
+        text-align: center;
         box-shadow: none;
-        background: #ffffff;
-        padding: 0;
-        margin: 0;
-        width: 100%;
-        max-width: 100%;
-        height: auto;
-        display: block;
     }
 
-    /* ── CABEÇALHO ── */
+    /* As regras de células de dados estão consolidadas mais abaixo no bloco “CÉLULAS DE DADOS” */
+
+    /* ── CABEÇALHO DA TABELA ── */
+    /* Devolvendo o azul marinho anterior */
+    .header-row th,
+    .subheader-row th,
+    .fornecedor-header {
+        background-color: #1e3a5f !important;
+        color: #ffffff !important;
+    }
+
+    .header-row th *,
+    .subheader-row th * {
+        color: #ffffff !important;
+    }
+
+    /* ── CABEÇALHO PRINCIPAL DA PÁGINA ── */
     .header {
         border: none;
         page-break-after: avoid;
-        margin-bottom: 12px;
+        margin-bottom: 15px;
         padding: 12px 20px;
         background: #1e3a5f !important;
         background-color: #1e3a5f !important;
-        border-radius: 10px;
-        border: none !important;
+        border-radius: 8px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -787,34 +935,158 @@ input[readonly] {
     }
 
     .field-row label {
-        color: #93c5fd !important;
-        font-size: 7px;
-        font-weight: 700;
+        color: #ffffff !important;
+        font-size: 9px;
+        font-weight: 800;
         text-transform: uppercase;
         letter-spacing: 1px;
     }
 
-    .field-row input,
-    .field-row select {
+    /* === INPUTS VISÍVEIS NO PDF (sem depender de spans JS) === */
+    input,
+    select,
+    textarea {
+        display: inline-block !important;
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        border: none !important;
+        background: transparent !important;
+        color: #000000 !important;
+        font-size: 8px !important;
+        font-weight: 800 !important;
+        text-align: center !important;
+        font-family: inherit !important;
+        box-shadow: none !important;
+        outline: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+    }
+
+    /* Esconder os botões + e X que não fazem sentido no PDF */
+    .btn-add-select,
+    .btn-remove-select-item,
+    .btn-edit-item,
+    .btn-add-fornecedor,
+    .botoes-acao,
+    .modal {
+        display: none !important;
+    }
+
+    /* Esconder seta do select no print */
+    select::-ms-expand { display: none !important; }
+
+    /* Spans efêmeros (caso o JS ainda crie algum, não interferem) */
+    .temp-print-span {
+        display: inline-block !important;
+        color: #000000 !important;
+        font-size: 8px !important;
+        font-family: inherit;
+        text-align: center !important;
+        font-weight: 800 !important;
+        width: 100% !important;
+        white-space: nowrap !important;
+        overflow: visible !important;
+    }
+
+    /* Selects dos nomes de fornecedores no cabeçalho da tabela (fundo azul → texto branco) */
+    .header-row select,
+    .header-row input,
+    .header-row .select-fornecedor,
+    .header-row .fornecedor-print-value,
+    .subheader-row select,
+    .fornecedor-header select,
+    .fornecedor-header .select-fornecedor,
+    .fornecedor-header .fornecedor-print-value {
         color: #ffffff !important;
-        font-size: 11px;
-        font-weight: 600;
+        font-size: 7.5px !important;
+        font-weight: 700 !important;
+        background: transparent !important;
+        border: none !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* FORÇAR branco nos selects de fornecedores dentro da tabela (sobrescreve regra genérica de inputs) */
+    .cotacao-table thead .select-fornecedor,
+    .cotacao-table thead select.select-fornecedor,
+    .cotacao-table .header-row select,
+    .cotacao-table .header-row .select-fornecedor,
+    .cotacao-table .header-row .fornecedor-print-value,
+    .cotacao-table th select,
+    .cotacao-table th .fornecedor-print-value {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Inputs do cabeçalho da página (nº cotação, data, etc) */
+    .header input,
+    .header select {
+        color: #000000 !important;
+        background-color: #ffffff !important;
+        font-size: 11px !important;
+        font-weight: 800 !important;
+        border-radius: 4px !important;
+        padding: 4px !important;
+    }
+
+    .header .temp-print-span,
+    .header-info .temp-print-span {
+        font-size: 11px !important;
+        background-color: #ffffff !important;
+        border-radius: 4px !important;
+        padding: 4px !important;
+        color: #000000 !important;
+    }
+
+    .assinaturas-diretoria .temp-print-span,
+    .assinaturas-diretoria input,
+    .assinaturas-diretoria select {
+        font-size: 10px !important;
+        color: #000000 !important;
+        font-weight: 600 !important;
+    }
+
+    /* Restaurar visual do .input-with-button e ocultar botões */
+    .input-with-button {
+        display: block !important;
+        width: 100% !important;
+    }
+
+    .input-with-button .btn-add-select,
+    .input-with-button .btn-edit-item,
+    .input-with-button .btn-remove-select-item {
+        display: none !important;
+    }
+
+    .input-with-button .item-select {
+        width: 100% !important;
+        color: #000000 !important;
+        font-weight: 600 !important;
+        font-size: 8px !important;
         background: transparent !important;
         border: none !important;
     }
 
-    .header .print-value,
-    .header-print-value {
-        display: inline-block !important;
-        color: #ffffff !important;
-        font-size: 11px !important;
-        font-weight: 600 !important;
-        visibility: visible !important;
+    /* Seção Especial de Resumo Vencedor e Justificativa no PDF */
+    .painel-executivo {
+        background-color: #ffffff !important;
+        border-color: #000000 !important;
+    }
+
+    .painel-executivo h3,
+    #textoResumoVencedor,
+    .justificativa-compra textarea,
+    .painel-executivo span {
+        color: #000000 !important;
+        background-color: #ffffff !important;
     }
 
     /* ── TÍTULO ── */
     .title {
-        color: #111827;
+        color: #000000 !important;
         font-size: 18px;
         margin: 8px 0;
         page-break-after: avoid;
@@ -840,7 +1112,8 @@ input[readonly] {
 
     .cotacao-table {
         page-break-inside: auto;
-        font-size: 8.5px;
+        font-family: Arial, sans-serif !important;
+        font-size: 6.5pt !important; /* v65: Reduzido para evitar quebra de linha */
         margin-bottom: 8px;
         width: 100% !important;
         min-width: 100% !important;
@@ -849,7 +1122,8 @@ input[readonly] {
         overflow: visible;
         box-shadow: none;
         table-layout: fixed;
-        border-collapse: collapse;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
     }
 
     .cotacao-table tr {
@@ -865,78 +1139,169 @@ input[readonly] {
         display: table-footer-group;
     }
 
-    /* ── CABEÇALHOS DA TABELA ── */
+    /* ── CABEÇALHOS E CÉLULAS (REGRA MESTRE DE GRADE HARMONIZADA v58) ── */
+    .cotacao-table th, 
+    .cotacao-table td {
+        font-family: Arial, sans-serif !important;
+        font-size: 6.5pt !important; /* v65 */
+        border: 1.2pt solid #000000 !important;
+        overflow: hidden !important; 
+        white-space: nowrap !important; /* v65: Impede quebra de palavras */
+        box-sizing: border-box !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
     .cotacao-table th {
-        padding: 6px 3px;
-        font-size: 7.5px;
-        font-family: 'Inter', Arial, sans-serif !important;
+        padding: 3px 2px !important;
+        font-size: 6.5pt !important; /* v65 */
+        font-family: Arial, sans-serif !important;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        border: 1px solid #cbd5e1 !important;
+        line-height: normal !important;
+        white-space: nowrap !important; /* v65 */
     }
 
     /* Colunas fixas: Item, Qtd, Und */
     .cotacao-table th:nth-child(1),
     .cotacao-table th:nth-child(2),
     .cotacao-table th:nth-child(3) {
-        background-color: #334155 !important;
+        background-color: #1e3a5f !important;
         color: #ffffff !important;
+        font-weight: 700 !important;
     }
 
-    /* Fornecedores */
-    .cotacao-table th.condec {
-        background-color: #3b82f6 !important;
-        color: #ffffff !important;
-    }
-
-    .cotacao-table th.teleaco {
-        background-color: #6366f1 !important;
-        color: #ffffff !important;
-    }
-
+    /* Fornecedores - fundo azul e texto branco (RESTALRADO v52) */
+    .cotacao-table th.condec,
+    .cotacao-table th.teleaco,
     .cotacao-table th.premolnitos {
-        background-color: #8b5cf6 !important;
+        background-color: #1e3a5f !important;
         color: #ffffff !important;
+        border: 1.2pt solid #000000 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
     }
 
-    /* Melhor Preço */
+    /* Melhor Preço - Fundo saturado v51 com Letras Brancas v52 */
     .cotacao-table th.melhor {
-        background-color: #059669 !important;
+        background-color: #059669 !important; /* Retornando ao verde original validado ou próximo dele */
         color: #ffffff !important;
+        border: 1px solid #000000 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
     }
 
-    /* Sub-cabeçalhos (Unit, Desconto, Total) */
+    /* Sub-cabeçalhos (Unit, Desconto, Total) - RESTALRADO v52 */
     .subheader-row th.condec,
     .subheader-row th.teleaco,
     .subheader-row th.premolnitos {
-        background-color: #f1f5f9 !important;
-        color: #475569 !important;
+        background-color: #1e3a5f !important;
+        color: #ffffff !important;
         font-weight: 600;
-        border: 1px solid #cbd5e1 !important;
+        border: 1px solid #000000 !important;
     }
 
     .subheader-row th.melhor {
-        background-color: #ecfdf5 !important;
-        color: #065f46 !important;
-        font-weight: 600;
-        border: 1px solid #cbd5e1 !important;
+        background-color: #bbf7d0 !important; /* Destaque maior v51 */
+        color: #000000 !important;
+        font-weight: 700;
+        border: 1px solid #000000 !important;
     }
 
-    /* ── CÉLULAS DE DADOS ── */
+    /* ── CÉLULAS DE DADOS (REGRA ÚNICA E CONSOLIDADA) ── */
     .cotacao-table td {
-        padding: 4px 3px;
-        font-size: 8px;
-        font-family: 'Inter', Arial, sans-serif !important;
-        border: 1px solid #cbd5e1 !important;
+        padding: 2px 3px !important;
+        font-size: 6.5pt !important; /* v65 */
+        font-family: Arial, sans-serif !important;
+        border: 1px solid #000000 !important;
         background-color: #ffffff !important;
-        color: #111827 !important;
+        color: #000000 !important;
         height: auto !important;
+        overflow: hidden !important;
+        min-width: 60px;
+        line-height: normal !important;
+        white-space: nowrap !important; /* v65 */
+    }
+
+    /* Grade entre fornecedores - borda em cada célula individual */
+    .cotacao-table td.condec,
+    .cotacao-table td.teleaco,
+    .cotacao-table td.premolnitos,
+    .cotacao-table td.melhor,
+    .cotacao-table tfoot td.condec,
+    .cotacao-table tfoot td.teleaco,
+    .cotacao-table tfoot td.premolnitos,
+    .cotacao-table tfoot td.melhor {
+        border: 1px solid #000000 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* ── INPUTS E SELECTS VISÍVEIS NO PDF (REGRA CRÍTICA) ── */
+    .cotacao-table input,
+    .cotacao-table select,
+    .cotacao-table tbody input,
+    .cotacao-table tbody select,
+    .cotacao-table tfoot input,
+    .cotacao-table tfoot select {
+        color: #000000 !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        font-size: 6.5pt !important; /* Padronizado v65 */
+        font-family: Arial, sans-serif !important; /* Padronizado v65 */
+        white-space: nowrap !important; /* v65 */
+        font-weight: 600 !important;
+        text-align: center !important;
+        overflow: hidden !important; 
+        box-sizing: border-box !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        padding: 1px 2px !important;
+        margin: 0 !important;
+        height: auto !important;
+        line-height: normal !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Forçar preto em placeholders de inputs no PDF v54 */
+    .cotacao-table input::placeholder {
+        color: #000000 !important;
+        opacity: 1 !important;
+    }
+
+    /* Selects de fornecedores e campos da linha de itens no PDF v54 */
+    .cotacao-table .select-fornecedor,
+    .cotacao-table .item-select,
+    .cotacao-table .qtd-input,
+    .cotacao-table .und-input {
+        color: #000000 !important;
+        font-weight: 700 !important;
+    }
+
+    /* Frete input visível no rodapé */
+    .frete-input {
+        color: #000000 !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 6.5pt !important; /* v65 */
+        font-weight: bold !important;
+        background: transparent !important;
+        border: none !important;
+    }
+
+    /* Total cells - texto preto e visível */
+    .cotacao-table .total-cell {
+        color: #000000 !important;
+        background-color: #ffffff !important;
     }
 
     /* Zebra striping sutil */
     .cotacao-table tbody tr:nth-child(even) td {
-        background-color: #f8fafc !important;
+        background-color: #f5f5f5 !important;
     }
 
     /* Colunas de desconto sempre visíveis */
@@ -951,22 +1316,18 @@ input[readonly] {
         display: table-cell !important;
     }
 
-    .cotacao-table td:nth-child(n+4) .print-value {
-        color: #111827 !important;
-    }
-
-    /* Colunas de "Melhor Preço" - fundo verde suave */
-    .cotacao-table td.melhor,
-    .cotacao-table tbody tr td.melhor {
-        background-color: #ecfdf5 !important;
-        color: #065f46 !important;
+    /* Colunas de "Melhor Preço" - fundo verde mais visível v51 */
+    .cotacao-table td.melhor {
+        background-color: #bbf7d0 !important;
+        color: #000000 !important;
+        border: 1.2pt solid #000000 !important; /* v66: Unificado */
     }
 
     .cotacao-table tbody tr:nth-child(even) td.melhor {
-        background-color: #d1fae5 !important;
+        background-color: #86efac !important;
+        border: 1.2pt solid #000000 !important; /* v66: Unificado */
     }
 
-    .cotacao-table td.melhor .print-value,
     .cotacao-table td.melhor .melhor-valor {
         color: #065f46 !important;
         font-weight: 700 !important;
@@ -978,37 +1339,30 @@ input[readonly] {
         font-size: 7px !important;
     }
 
-    /* Destaque: Linha do melhor preço por item */
-    .cotacao-table tbody td {
-        background-color: transparent;
-    }
-
-    .total-cell {
-        color: #1e293b !important;
+    /* ── DESTAQUE VERDE DO MELHOR PREÇO ── */
+    .cotacao-table td.melhor-preco,
+    .cotacao-table tbody td.melhor-preco,
+    .cotacao-table tbody tr:nth-child(even) td.melhor-preco,
+    .cotacao-table tfoot td.melhor-preco {
+        background-color: #22c55e !important; /* Verde Escuro Sóbrio v61 */
+        color: #000000 !important; /* Letras Pretas Obrigatórias */
         font-weight: bold !important;
-        font-size: 9px !important;
-    }
-
-    .total-cell.melhor-preco,
-    .melhor-preco,
-    .cotacao-table tbody .melhor-preco {
-        background-color: #d1fae5 !important;
-        color: #065f46 !important;
-        font-weight: bold !important;
-        border: 1px solid #6ee7b7 !important;
+        border: 1.2pt solid #000000 !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
     }
 
-    .cotacao-table tbody .total-cell {
-        color: #111827 !important;
-        font-weight: bold !important;
-        visibility: visible !important;
+    .cotacao-table td.melhor-preco .temp-print-span,
+    .cotacao-table tfoot td.melhor-preco .temp-print-span {
+        color: #000000 !important;
     }
 
-    .melhor-preco .print-value {
-        color: #065f46 !important;
+    .cotacao-table .total-cell {
+        color: #000000 !important;
         font-weight: bold !important;
+        font-size: 10px !important;
+        text-align: center !important;
+        visibility: visible !important;
     }
 
     /* ── CONDIÇÃO DE PAGAMENTO - VISÍVEL ── */
@@ -1018,71 +1372,80 @@ input[readonly] {
 
     .pgto-row td {
         background-color: #f1f5f9 !important;
-        color: #111827 !important;
+        color: #000000 !important;
         font-weight: 600 !important;
         font-size: 9px !important;
-        border: 1px solid #cbd5e1 !important;
+        border: 1px solid #000000 !important;
     }
 
     .pgto-row .print-value,
     .pgto-row .pgto-input {
         display: inline-block !important;
-        color: #111827 !important;
+        color: #000000 !important;
         font-weight: 600 !important;
         font-size: 9px !important;
         visibility: visible !important;
     }
 
-    /* ── RODAPÉ DA TABELA (Subtotais e Totais) ── */
+    /* ── RODAPÉ DA TABELA (Subtotal, Totais) ── */
+    .cotacao-table tfoot tr td,
     .total-row td,
-    .frete-row td,
     .total-final-row td {
         font-weight: bold !important;
-        font-size: 9px !important;
+        font-size: 10px !important;
+        text-align: center !important;
         padding: 5px 3px;
-        border-top: 2px solid #cbd5e1 !important;
+        border: 1px solid #000000 !important;
+        /* Grade forte consertada entre eles horizontal e vertical */
         background-color: #ffffff !important;
-        color: #111827 !important;
+        color: #000000 !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
+    }
+
+    .frete-row .temp-print-span {
+        font-size: 10px !important;
+        font-weight: bold !important;
+        text-align: center !important;
+        background-color: transparent !important;
+        color: #000000 !important;
     }
 
     /* Label "SUBTOTAL / TOTAL" */
     .total-row td:nth-child(n+1):nth-child(-n+3),
     .total-final-row td:nth-child(n+1):nth-child(-n+3) {
-        background-color: #f1f5f9 !important;
-        color: #111827 !important;
+        background-color: #f3f4f6 !important;
+        /* Cinza Neutro em vez de slate */
+        color: #000000 !important;
         font-weight: 700 !important;
     }
 
-    /* Valores por fornecedor no rodapé */
-    .total-row td.condec, .total-final-row td.condec {
-        background-color: #eff6ff !important;
-        color: #1d4ed8 !important;
-    }
-
-    .total-row td.teleaco, .total-final-row td.teleaco {
-        background-color: #eef2ff !important;
-        color: #4338ca !important;
-    }
-
-    .total-row td.premolnitos, .total-final-row td.premolnitos {
-        background-color: #f5f3ff !important;
-        color: #6d28d9 !important;
+    /* Valores por fornecedor no rodapé limpos de azul */
+    .total-row td.condec,
+    .total-final-row td.condec,
+    .total-row td.teleaco,
+    .total-final-row td.teleaco,
+    .total-row td.premolnitos,
+    .total-final-row td.premolnitos {
+        background-color: #ffffff !important;
+        /* Fundo branco puro em vez de cinza ultraclaro */
+        color: #000000 !important;
     }
 
     /* Melhor no rodapé */
-    .total-row td.melhor, .total-final-row td.melhor {
-        background-color: #ecfdf5 !important;
-        color: #065f46 !important;
+    .total-row td.melhor,
+    .total-final-row td.melhor {
+        background-color: #22c55e !important; /* Verde Escuro v61 */
+        color: #000000 !important;
         font-weight: 800 !important;
+        border: 1.2pt solid #000000 !important; /* v66: Reforçado */
     }
 
     /* Células vazias / espaçadores no rodapé */
     .total-row td:not([class*="condec"]):not([class*="teleaco"]):not([class*="premolnitos"]):not([class*="melhor"]):not(:nth-child(-n+3)),
     .total-final-row td:not([class*="condec"]):not([class*="teleaco"]):not([class*="premolnitos"]):not([class*="melhor"]):not(:nth-child(-n+3)) {
         background-color: #ffffff !important;
-        border: none !important;
+        border: 1px solid #000000 !important;
     }
 
     .total-value {
@@ -1097,39 +1460,49 @@ input[readonly] {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 10px;
-        background-color: #f8fafc !important;
-        border: 1px solid #e2e8f0 !important;
-        border-radius: 8px;
-        margin: 6px 0;
+        background-color: #ffffff !important;
+        border: 2px solid #000000 !important; /* Grade forte */
+        border-radius: 0;
+        margin: 10px 0;
         padding: 8px 10px;
         page-break-inside: avoid;
     }
 
     .painel-executivo h3 {
-        color: #334155 !important;
-        font-size: 9px;
-        border-bottom: 1px solid #cbd5e1;
-        margin-bottom: 4px;
+        color: #000000 !important;
+        font-size: 10px;
+        border-bottom: 2px solid #000000;
+        margin-bottom: 6px;
         padding-bottom: 3px;
-        font-weight: 700;
+        font-weight: 800;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
 
     #textoResumoVencedor {
         background-color: transparent !important;
-        color: #1e293b !important;
+        color: #000000 !important;
         border: none;
-        font-size: 9px !important;
+        font-size: 10px !important;
+        line-height: 1.4;
+    }
+
+    .justificativa-compra {
+        border-left: 1px solid #000000;
+        padding-left: 10px;
     }
 
     .textarea-justificativa {
         background-color: transparent !important;
-        color: #1e293b !important;
+        color: #000000 !important;
         border: none !important;
         resize: none;
-        overflow: hidden;
-        font-size: 9px !important;
+        overflow: visible !important;
+        font-size: 10px !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 50px;
+        display: block !important;
     }
 
     .frete-input::placeholder,
@@ -1201,62 +1574,15 @@ input[readonly] {
     .btn-salvar,
     .btn-carregar,
     .btn-limpar,
-    .botoes-acao {
+    .botoes-acao,
+    .frete-row,
+    .total-row {
         display: none !important;
     }
 
-    /* Esconder inputs/selects nativos - os .print-value spans os substituem */
-    .cotacao-table input,
-    .cotacao-table select:not(.select-fornecedor) {
-        display: none !important;
-    }
+    /* Inputs e selects nativos agora são impressos diretamente pelo CSS nativo definido acima */
 
-    /* Selects de fornecedores são escondidos pelo JS, não forçar aqui */
-    .select-fornecedor {
-        display: none !important;
-    }
 
-    /* ── VALORES IMPRESSOS ── */
-    .print-value {
-        display: inline-block !important;
-        color: #111827 !important;
-        font-size: 8px !important;
-        font-weight: 700 !important;
-        text-align: center;
-        width: 100%;
-        padding: 1px;
-        visibility: visible !important;
-    }
-
-    .print-value.item-select {
-        text-align: left !important;
-    }
-
-    .print-value.unit-input,
-    .print-value.qtd-input,
-    .print-value.desc-input {
-        text-align: center !important;
-    }
-
-    .fornecedor-print-value {
-        display: inline-block !important;
-        color: #111827 !important;
-        font-weight: 800 !important;
-        text-transform: uppercase;
-        font-size: 9px !important;
-        visibility: visible !important;
-    }
-
-    .melhor-valor,
-    .melhor-fornecedor {
-        color: #065f46 !important;
-        font-weight: 700 !important;
-        font-size: 9px !important;
-    }
-
-    .notificacao {
-        display: none !important;
-    }
 }
 
 
@@ -1269,11 +1595,12 @@ input[readonly] {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.7);
+    background-color: rgba(0, 0, 0, 0.7);
 }
 
 .modal-content {
-    background-color: #1e1e24; /* Fundo escuro do modal */
+    background-color: #1e1e24;
+    /* Fundo escuro do modal */
     margin: 5% auto;
     padding: 0;
     border-radius: 8px;
@@ -1281,11 +1608,12 @@ input[readonly] {
     max-width: 900px;
     max-height: 80vh;
     overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
 }
 
 .modal-header {
-    background-color: #1a202c; /* Azul/cinza bem escuro para o cabeçalho modal */
+    background-color: #1a202c;
+    /* Azul/cinza bem escuro para o cabeçalho modal */
     color: #e2e8f0;
     padding: 20px;
     display: flex;
@@ -1362,13 +1690,14 @@ input[readonly] {
     padding: 15px;
     border: 1px solid #3f3f46;
     border-radius: 6px;
-    background-color: #2d3748; /* Fundo item escuro */
+    background-color: #2d3748;
+    /* Fundo item escuro */
     transition: all 0.3s;
 }
 
 .cotacao-item:hover {
     background-color: #3f3f46;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .cotacao-info {
@@ -1377,7 +1706,8 @@ input[readonly] {
 
 .cotacao-info strong {
     font-size: 16px;
-    color: #63b3ed; /* Azul claro p/ destacar */
+    color: #63b3ed;
+    /* Azul claro p/ destacar */
     display: block;
     margin-bottom: 5px;
 }
@@ -1385,7 +1715,8 @@ input[readonly] {
 .cotacao-info p {
     margin: 3px 0;
     font-size: 13px;
-    color: #a0aec0; /* Texto secundário claro */
+    color: #a0aec0;
+    /* Texto secundário claro */
 }
 
 .badge {
@@ -1443,14 +1774,16 @@ input[readonly] {
 
 /* Notificações */
 .notificacao {
+    display: none !important;
     position: fixed;
     top: 20px;
     right: -400px;
-    background-color: #1e1e24; /* Fundo das notificações */
+    background-color: #1e1e24;
+    /* Fundo das notificações */
     color: #e2e8f0;
     padding: 15px 20px;
     border-radius: 6px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     z-index: 2000;
     min-width: 300px;
     transition: right 0.3s ease;
@@ -1463,15 +1796,18 @@ input[readonly] {
 }
 
 .notificacao-success {
-    border-left: 4px solid #48bb78; /* Verde do dark mode */
+    border-left: 4px solid #48bb78;
+    /* Verde do dark mode */
 }
 
 .notificacao-error {
-    border-left: 4px solid #f56565; /* Vermelho escurecido */
+    border-left: 4px solid #f56565;
+    /* Vermelho escurecido */
 }
 
 .notificacao-info {
-    border-left: 4px solid #4fd1c5; /* Cíano */
+    border-left: 4px solid #4fd1c5;
+    /* Cíano */
 }
 
 @media print {

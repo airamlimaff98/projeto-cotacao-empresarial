@@ -1,35 +1,22 @@
 // ========================================
 // GERENCIAMENTO DE SELECTS
 // ========================================
+
 /**
  * Função genérica para adicionar uma nova opção a uma lista, salvando no Firebase e atualizando a UI.
- * @param {object} config - Objeto de configuração.
- * @param {string} config.entidadeNome - Nome da entidade para mensagens (ex: 'Fornecedor').
- * @param {string} config.promptMsg - Mensagem para exibir no prompt.
- * @param {string} config.firebasePath - Caminho no Firebase para salvar o novo item.
- * @param {function} [config.formatoNome] - Função para formatar o nome inserido.
- * @param {function} config.onSuccess - Callback para executar na UI após o sucesso.
  */
 async function adicionarNovaOpcao(config) {
     const { entidadeNome, promptMsg, firebasePath, formatoNome = (nome) => nome.trim().toUpperCase(), onSuccess } = config;
-
-// Adicionar novo fornecedor
-async function adicionarNovoFornecedor() {
-    const nome = prompt('Digite o nome do novo fornecedor:');
-    
     const nome = prompt(promptMsg);
+    
     if (!nome || nome.trim() === '') {
         return;
     }
     
-
     const nomeFormatado = formatoNome(nome);
 
     try {
         // Salvar no Firebase
-        const fornecedorRef = database.ref('fornecedores').push();
-        await fornecedorRef.set({
-            nome: nome.trim().toUpperCase(),
         const ref = database.ref(firebasePath).push();
         await ref.set({
             nome: nomeFormatado,
@@ -37,22 +24,12 @@ async function adicionarNovoFornecedor() {
             criadoEm: firebase.database.ServerValue.TIMESTAMP
         });
         
-        // Adicionar à lista local
-        fornecedoresLista.push(nome.trim().toUpperCase());
-        
-        // Atualizar selects
-        preencherSelectsFornecedores();
-        
-        mostrarNotificacao('Fornecedor adicionado com sucesso!', 'success');
-
         if (onSuccess) {
             onSuccess(nomeFormatado);
         }
 
         mostrarNotificacao(`${entidadeNome} adicionado com sucesso!`, 'success');
     } catch (error) {
-        console.error('Erro ao adicionar fornecedor:', error);
-        mostrarNotificacao('Erro ao adicionar fornecedor: ' + error.message, 'error');
         console.error(`Erro ao adicionar ${entidadeNome}:`, error);
         mostrarNotificacao(`Erro ao adicionar ${entidadeNome}: ` + error.message, 'error');
     }
@@ -65,38 +42,18 @@ async function adicionarNovoFornecedor() {
         promptMsg: 'Digite o nome do novo fornecedor:',
         firebasePath: 'fornecedores',
         onSuccess: (nome) => {
-            if (!fornecedoresLista.includes(nome)) {
+            if (typeof fornecedoresLista !== 'undefined' && !fornecedoresLista.includes(nome)) {
                 fornecedoresLista.push(nome);
             }
-            // A função preencherSelectsFornecedores já atualiza todos os selects
-            preencherSelectsFornecedores();
+            if (typeof preencherSelectsFornecedores === 'function') {
+                preencherSelectsFornecedores();
+            }
         }
     });
 }
 
 // Adicionar novo centro de custo
 async function adicionarNovoCentroCusto() {
-    const nome = prompt('Digite o nome do novo Centro de Custo:');
-    
-    if (!nome || nome.trim() === '') {
-        return;
-    }
-    
-    try {
-        // Salvar no Firebase
-        const centroRef = database.ref('centrosCusto').push();
-        await centroRef.set({
-            nome: nome.trim().toUpperCase(),
-            ativo: true,
-            criadoEm: firebase.database.ServerValue.TIMESTAMP
-        });
-        
-        // Adicionar ao select
-        const select = document.getElementById('centroCusto');
-        
-        // Verificar se já existe na lista local antes de adicionar
-        if (Array.from(select.options).some(opt => opt.value === nome.trim().toUpperCase())) {
-            return; // Já existe, apenas sai
     await adicionarNovaOpcao({
         entidadeNome: 'Centro de Custo',
         promptMsg: 'Digite o nome do novo Centro de Custo:',
@@ -111,58 +68,18 @@ async function adicionarNovoCentroCusto() {
                 select.value = nome;
             }
         }
-
-        const option = document.createElement('option');
-        option.value = nome.trim().toUpperCase();
-        option.textContent = nome.trim().toUpperCase();
-        select.appendChild(option);
-        select.value = nome.trim().toUpperCase();
-        
-        mostrarNotificacao('Centro de Custo adicionado com sucesso!', 'success');
-    } catch (error) {
-        console.error('Erro ao adicionar centro de custo:', error);
-        mostrarNotificacao('Erro ao adicionar centro de custo: ' + error.message, 'error');
-    }
     });
 }
 
 // Adicionar novo solicitante
 async function adicionarNovoSolicitante() {
-    const nome = prompt('Digite o nome do novo Solicitante:');
-    
-    if (!nome || nome.trim() === '') {
-        return;
-    }
-    
-    try {
-        // Salvar no Firebase
-        const solicitanteRef = database.ref('solicitantes').push();
-        await solicitanteRef.set({
-            nome: nome.trim(),
-            ativo: true,
-            criadoEm: firebase.database.ServerValue.TIMESTAMP
-        });
-        
-        // Adicionar ao select
-        const select = document.querySelector('.assinaturas select');
-        const option = document.createElement('option');
-        option.value = nome.trim();
-        option.textContent = nome.trim();
-        select.appendChild(option);
-        select.value = nome.trim();
-        
-        mostrarNotificacao('Solicitante adicionado com sucesso!', 'success');
-    } catch (error) {
-        console.error('Erro ao adicionar solicitante:', error);
-        mostrarNotificacao('Erro ao adicionar solicitante: ' + error.message, 'error');
-    }
     await adicionarNovaOpcao({
         entidadeNome: 'Solicitante',
         promptMsg: 'Digite o nome do novo Solicitante:',
         firebasePath: 'solicitantes',
         formatoNome: (nome) => nome.trim(), // Solicitante não precisa ser maiúsculo
         onSuccess: (nome) => {
-            const select = document.querySelector('.assinaturas-diretoria select'); // Seletor mais específico
+            const select = document.querySelector('.assinaturas-diretoria select');
             if (select && !Array.from(select.options).some(opt => opt.value === nome)) {
                 const option = document.createElement('option');
                 option.value = nome;
@@ -187,10 +104,8 @@ async function carregarFornecedoresDoFirebase() {
             }
         });
         
-        // Mesclar com lista local
-        if (fornecedoresFirebase.length > 0) {
+        if (typeof fornecedoresLista !== 'undefined' && fornecedoresFirebase.length > 0) {
             fornecedoresLista.push(...fornecedoresFirebase);
-            // Remover duplicatas
             fornecedoresLista = [...new Set(fornecedoresLista)];
         }
     } catch (error) {
@@ -203,11 +118,11 @@ async function carregarCentrosCustoDoFirebase() {
     try {
         const snapshot = await database.ref('centrosCusto').once('value');
         const select = document.getElementById('centroCusto');
+        if (!select) return;
         
         snapshot.forEach((childSnapshot) => {
             const centro = childSnapshot.val();
             if (centro.ativo) {
-                // Verificar se já existe
                 const existe = Array.from(select.options).some(opt => opt.value === centro.nome);
                 if (!existe) {
                     const option = document.createElement('option');
@@ -226,13 +141,12 @@ async function carregarCentrosCustoDoFirebase() {
 async function carregarSolicitantesDoFirebase() {
     try {
         const snapshot = await database.ref('solicitantes').once('value');
-        const select = document.querySelector('.assinaturas select');
-        const select = document.querySelector('.assinaturas-diretoria select'); // Seletor mais específico
+        const select = document.querySelector('.assinaturas-diretoria select');
+        if (!select) return;
         
         snapshot.forEach((childSnapshot) => {
             const solicitante = childSnapshot.val();
             if (solicitante.ativo) {
-                // Verificar se já existe
                 const existe = Array.from(select.options).some(opt => opt.value === solicitante.nome);
                 if (!existe) {
                     const option = document.createElement('option');
@@ -247,22 +161,20 @@ async function carregarSolicitantesDoFirebase() {
     }
 }
 
-// Inicializar carregamento ao abrir página
-window.addEventListener('DOMContentLoaded', async () => {
+// Inicializar carregamento
 async function inicializarGerenciadorSelects() {
     await carregarFornecedoresDoFirebase();
     await carregarCentrosCustoDoFirebase();
     await carregarSolicitantesDoFirebase();
-});
-
 }
+
 // ========================================
-// FUNÇÕES DE EXCLUSÃO DE LISTAS (OBRAS, FORNECEDORES)
+// FUNÇÕES DE EXCLUSÃO DE LISTAS
 // ========================================
 
 async function excluirCentroCustoSelecionado() {
     const select = document.getElementById('centroCusto');
-    const valor = select.value;
+    const valor = select?.value;
     
     if (!valor) {
         alert('Selecione uma Obra/Centro de Custo para excluir.');
@@ -271,7 +183,6 @@ async function excluirCentroCustoSelecionado() {
     
     if (confirm(`Deseja realmente excluir a obra "${valor}" da lista?`)) {
         try {
-            // Desativar no Firebase, se existir
             const snapshot = await database.ref('centrosCusto').once('value');
             snapshot.forEach(child => {
                 if (child.val().nome === valor) {
@@ -279,11 +190,8 @@ async function excluirCentroCustoSelecionado() {
                 }
             });
             
-            // Remover da DOM
             const option = select.querySelector(`option[value="${valor}"]`);
-            if (option) {
-                option.remove();
-            }
+            if (option) option.remove();
             select.value = '';
             
             mostrarNotificacao('Obra excluída com sucesso!', 'success');
@@ -295,10 +203,9 @@ async function excluirCentroCustoSelecionado() {
 }
 
 async function excluirFornecedorSelecionado(btnElement) {
-    // Achar o select irmão deste botão
     const container = btnElement.closest('.fornecedor-header');
-    const select = container.querySelector('.select-fornecedor');
-    const valor = select.value;
+    const select = container?.querySelector('.select-fornecedor');
+    const valor = select?.value;
     
     if (!valor || valor === 'N/T') {
         alert('Selecione um fornecedor válido para excluir.');
@@ -307,7 +214,6 @@ async function excluirFornecedorSelecionado(btnElement) {
     
     if (confirm(`Deseja realmente excluir o fornecedor "${valor}" de todas as listas?`)) {
         try {
-            // Desativar no Firebase, se existir
             const snapshot = await database.ref('fornecedores').once('value');
             snapshot.forEach(child => {
                 const f = child.val();
@@ -316,7 +222,6 @@ async function excluirFornecedorSelecionado(btnElement) {
                 }
             });
             
-            // Remover da lista local (fornecedoresLista que fica em memória)
             if (typeof fornecedoresLista !== 'undefined') {
                 const index = fornecedoresLista.findIndex(f => f.toUpperCase() === valor.toUpperCase());
                 if (index > -1) {
@@ -324,8 +229,9 @@ async function excluirFornecedorSelecionado(btnElement) {
                 }
             }
             
-            // Repreencher todos os selects
-            preencherSelectsFornecedores();
+            if (typeof preencherSelectsFornecedores === 'function') {
+                preencherSelectsFornecedores();
+            }
             
             mostrarNotificacao('Fornecedor excluído com sucesso!', 'success');
         } catch (error) {

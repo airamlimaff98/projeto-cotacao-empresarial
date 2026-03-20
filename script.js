@@ -77,14 +77,14 @@ function adicionarItem() {
                 <select class="item-select" data-item="${itemCount}" style="flex:1;">
                     <option value="">Selecione ou digite novo</option>
                 </select>
-                <button class="btn-edit-item" onclick="editarItem(${itemCount})" title="Editar Item" style="padding:4px 8px;font-size:12px;background:#ffc107;border:none;border-radius:4px;cursor:pointer;font-weight:bold;">✏️</button>
-                <button class="btn-add-select" onclick="adicionarNovoItem(${itemCount})" title="Adicionar Novo Item" style="padding:4px 8px;font-size:12px;">+</button>
-                <button class="btn-remove-select-item" onclick="excluirItemSelecionado(${itemCount})" title="Excluir Item da Lista" style="padding:4px 8px;font-size:12px;background:#dc3545;color:white;border:none;border-radius:4px;cursor:pointer;font-weight:bold;">X</button>
+                <button class="btn-edit-item" onclick="editarItem(${itemCount})" title="Editar Item" aria-label="Editar Item" style="padding:4px 8px;font-size:12px;background:#ffc107;border:none;border-radius:4px;cursor:pointer;font-weight:bold;">✏️</button>
+                <button class="btn-add-select" onclick="adicionarNovoItem(${itemCount})" title="Adicionar Novo Item" aria-label="Adicionar Novo Item" style="padding:4px 8px;font-size:12px;">+</button>
+                <button class="btn-remove-select-item" onclick="excluirItemSelecionado(${itemCount})" title="Excluir Item da Lista" aria-label="Excluir Item da Lista" style="padding:4px 8px;font-size:12px;background:#dc3545;color:white;border:none;border-radius:4px;cursor:pointer;font-weight:bold;">X</button>
             </div>
         </td>
-        <td><input type="number" step="1" class="qtd-input" data-item="${itemCount}"></td>
+        <td><input type="text" class="qtd-input" data-item="${itemCount}" inputmode="numeric" oninput="mascaraQuantidade(this); calcularLinha(${itemCount})"></td>
         <td>
-            <select class="und-input">
+            <select class="und-input" onchange="calcularLinha(${itemCount})">
                 <option value="">-</option>
                 <option value="UN">UN</option>
                 <option value="M">M</option>
@@ -96,14 +96,14 @@ function adicionarItem() {
                 <option value="PC">PC</option>
             </select>
         </td>
-        <td class="condec unit-cell"><input type="number" step="0.01" class="unit-input" data-item="${itemCount}" data-fornecedor="condec"></td>
-        <td class="condec desc-cell"><input type="text" class="desc-input" data-item="${itemCount}" data-fornecedor="condec" value="0" placeholder="0"></td>
+        <td class="condec unit-cell"><input type="text" class="unit-input" data-item="${itemCount}" data-fornecedor="condec" inputmode="decimal" oninput="mascaraMoeda(this)" placeholder="R$ 0,00"></td>
+        <td class="condec desc-cell"><input type="text" class="desc-input" data-item="${itemCount}" data-fornecedor="condec" value="0,00" placeholder="0,00" inputmode="decimal" oninput="calcularLinha(${itemCount})"></td>
         <td class="condec total-cell" data-item="${itemCount}" data-fornecedor="condec">R$ 0,00</td>
-        <td class="teleaco unit-cell"><input type="number" step="0.01" class="unit-input" data-item="${itemCount}" data-fornecedor="teleaco"></td>
-        <td class="teleaco desc-cell"><input type="text" class="desc-input" data-item="${itemCount}" data-fornecedor="teleaco" value="0" placeholder="0"></td>
+        <td class="teleaco unit-cell"><input type="text" class="unit-input" data-item="${itemCount}" data-fornecedor="teleaco" inputmode="decimal" oninput="mascaraMoeda(this)" placeholder="R$ 0,00"></td>
+        <td class="teleaco desc-cell"><input type="text" class="desc-input" data-item="${itemCount}" data-fornecedor="teleaco" value="0,00" placeholder="0,00" inputmode="decimal" oninput="calcularLinha(${itemCount})"></td>
         <td class="teleaco total-cell" data-item="${itemCount}" data-fornecedor="teleaco">R$ 0,00</td>
-        <td class="premolnitos unit-cell"><input type="number" step="0.01" class="unit-input" data-item="${itemCount}" data-fornecedor="premolnitos"></td>
-        <td class="premolnitos desc-cell"><input type="text" class="desc-input" data-item="${itemCount}" data-fornecedor="premolnitos" value="0" placeholder="0"></td>
+        <td class="premolnitos unit-cell"><input type="text" class="unit-input" data-item="${itemCount}" data-fornecedor="premolnitos" inputmode="decimal" oninput="mascaraMoeda(this)" placeholder="R$ 0,00"></td>
+        <td class="premolnitos desc-cell"><input type="text" class="desc-input" data-item="${itemCount}" data-fornecedor="premolnitos" value="0,00" placeholder="0,00" inputmode="decimal" oninput="calcularLinha(${itemCount})"></td>
         <td class="premolnitos total-cell" data-item="${itemCount}" data-fornecedor="premolnitos">R$ 0,00</td>
         <td class="melhor total-cell melhor-unit unit-cell" data-item="${itemCount}">R$ 0,00</td>
         <td class="melhor total-cell melhor-desc" data-item="${itemCount}">-</td>
@@ -133,19 +133,49 @@ function handleTableInput(event) {
     }
 }
 
-// Manipulador de evento blur para formatação (Event Delegation)
+// Manipulador de evento blur para formatação decimal (Event Delegation)
 function handleTableBlur(event) {
     const target = event.target;
-    if (target.matches('.unit-input')) {
-        if (target.value) {
-            const valor = parseFloat(target.value);
-            if (!isNaN(valor)) {
-                target.value = valor.toFixed(2);
-                const itemNum = target.closest('tr')?.dataset.item;
-                if (itemNum) calcularLinha(itemNum);
-            }
+    // Formata campos numéricos ao perder foco
+    if (target.matches('.qtd-input')) {
+        if (target.value && target.value.trim() !== '') {
+            target.value = formatarQuantidade(desformatarReais(target.value));
+        }
+    } else if (target.matches('.unit-input, .frete-input')) {
+        if (target.value && target.value.trim() !== '') {
+            target.value = formatarMoeda(desformatarReais(target.value));
+        }
+    } else if (target.matches('.desc-input')) {
+        if (target.value && target.value.trim() !== '') {
+            const num = desformatarReais(target.value);
+            target.value = isNaN(num) ? '0,00' : num.toFixed(2).replace('.', ',');
         }
     }
+    
+    const itemNum = target.closest('tr')?.dataset.item;
+    if (itemNum) calcularLinha(itemNum);
+}
+
+// Máscara de Moeda em Tempo Real (BRL)
+function mascaraMoeda(input) {
+    let valor = input.value.replace(/\D/g, "");
+    if (valor === "") {
+        input.value = "";
+        return;
+    }
+    let num = (parseFloat(valor) / 100).toFixed(2);
+    input.value = formatarMoeda(parseFloat(num));
+}
+
+// Máscara de Quantidade em Tempo Real (Decimal 2 casas)
+function mascaraQuantidade(input) {
+    let valor = input.value.replace(/\D/g, "");
+    if (valor === "") {
+        input.value = "";
+        return;
+    }
+    let num = (parseFloat(valor) / 100).toFixed(2).replace(".", ",");
+    input.value = num;
 }
 
 // Excluir Item do Select (Material)
@@ -342,7 +372,8 @@ function calcularLinha(item) {
     const qtdInput = document.querySelector(`.qtd-input[data-item="${item}"]`);
     if (!qtdInput) return; // Linha não existe
     
-    const qtd = parseFloat(qtdInput.value) || 0;
+    // Captura segura e imune a formatação de milhares
+    const qtd = desformatarReais(qtdInput.value) || 0;
     
     const valores = [];
     
@@ -354,24 +385,31 @@ function calcularLinha(item) {
         
         if (!unitInput || !totalCell) return;
         
-        const unitValue = parseFloat(unitInput.value) || 0;
-        const descText = descInput?.value || '';
-        const descValue = parseFloat(descText.replace('%', '').replace(',', '.')) || 0;
+        const unitValue = desformatarReais(unitInput.value) || 0;
+        const descValue = desformatarReais(descInput?.value) || 0;
         
-        // Calcular total com desconto
-        let total = qtd * unitValue;
+        // Regra: TOTAL = QTD * (Unitário com Desconto %)
+        let unitComDesconto = unitValue;
         if (descValue > 0) {
-            total = total * (1 - descValue / 100);
+            unitComDesconto = unitValue * (1 - descValue / 100);
         }
         
+        const total = qtd * unitComDesconto;
+        
         totalCell.textContent = formatarMoeda(total);
+        
+        // Garantir exibição de % na célula de desconto (mesmo para 0)
+        if (descInput) {
+            const descNum = desformatarReais(descInput.value);
+            descInput.dataset.formatted = descNum.toFixed(2).replace('.', ',') + '%';
+        }
         
         if (unitValue > 0) {
             valores.push({
                 fornecedor,
                 unit: unitValue,
                 desc: descValue,
-                total
+                total: total
             });
         }
     });
@@ -388,7 +426,7 @@ function calcularLinha(item) {
         const nomeFornecedor = document.querySelector(`.select-fornecedor[data-fornecedor="${melhor.fornecedor}"]`)?.value || melhor.fornecedor.toUpperCase();
         
         melhorUnitCell.textContent = formatarMoeda(melhor.unit);
-        melhorDescCell.textContent = melhor.desc > 0 ? `${melhor.desc}%` : '-';
+        melhorDescCell.textContent = melhor.desc.toFixed(2).replace('.', ',') + '%'; // v61: Sempre exibir % no Melhor Preço
         
         const melhorValorSpan = melhorTotalCell.querySelector('.melhor-valor');
         const melhorFornecedorSpan = melhorTotalCell.querySelector('.melhor-fornecedor');
@@ -396,7 +434,7 @@ function calcularLinha(item) {
         if (melhorValorSpan) melhorValorSpan.textContent = formatarMoeda(melhor.total);
         if (melhorFornecedorSpan) melhorFornecedorSpan.textContent = nomeFornecedor;
         
-        // Destacar melhor preço em TODAS as colunas do fornecedor
+        // Destacar melhor preço nas 3 colunas (unit, desc, total) do fornecedor vencedor
         FORNECEDORES_KEYS.forEach(f => {
             const linha = document.querySelector(`tr[data-item="${item}"]`);
             if (linha) {
@@ -412,7 +450,7 @@ function calcularLinha(item) {
         });
     } else {
         melhorUnitCell.textContent = 'R$ 0,00';
-        melhorDescCell.textContent = '-';
+        melhorDescCell.textContent = '0,00%'; // v61: Padrão 0% quando vazio
         
         const melhorValorSpan = melhorTotalCell.querySelector('.melhor-valor');
         const melhorFornecedorSpan = melhorTotalCell.querySelector('.melhor-fornecedor');
@@ -420,7 +458,7 @@ function calcularLinha(item) {
         if (melhorValorSpan) melhorValorSpan.textContent = 'R$ 0,00';
         if (melhorFornecedorSpan) melhorFornecedorSpan.textContent = '-';
         
-        // Remover destaque
+        // Remover destaque de todas as colunas
         FORNECEDORES_KEYS.forEach(f => {
             const linha = document.querySelector(`tr[data-item="${item}"]`);
             if (linha) {
@@ -485,8 +523,8 @@ function gerarResumoExecutivo(resultFornecedores, ranking) {
             const economiaPerc = (economiaReal / maisCaro) * 100;
 
             if (economiaReal > 0) {
-                textEconomia = `<div style="margin-top: 10px; padding: 6px; background: rgba(72,187,120,0.15); border-left: 3px solid #48bb78; border-radius: 4px;">
-                    💎 <strong>Economia gerada:</strong> ${formatarMoeda(economiaReal)} (${economiaPerc.toFixed(1)}%) em relação à proposta mais cara recebida.
+                textEconomia = `<div style="margin-top: 10px; padding: 6px; background: #f0fdf4; border: 1px solid #000; border-radius: 4px; color: #000;">
+                    💎 <strong>Economia gerada:</strong> ${formatarMoeda(economiaReal)} (${economiaPerc.toFixed(1)}%) em relação à proposta mais cara.
                 </div>`;
             }
         }
@@ -508,8 +546,17 @@ function gerarResumoExecutivo(resultFornecedores, ranking) {
         if (subtotalElement) subtotalElement.textContent = formatarMoeda(dados.subtotal);
 
         const totalElement = document.getElementById(`total${capitalize(fornecedor)}`);
-        if (totalElement && fornecedor === 'melhor' && dados.totalFinal > 0) {
-            totalElement.innerHTML = formatarMoeda(dados.totalFinal);
+        if (totalElement) {
+            // Preserva medalhas se existirem
+            let spanMedalha = '';
+            const existingSpan = totalElement.querySelector('span');
+            if (existingSpan) spanMedalha = existingSpan.outerHTML + ' ';
+            totalElement.innerHTML = spanMedalha + formatarMoeda(dados.totalFinal);
+        }
+
+        if (fornecedor === 'melhor') {
+            const freteMelhorDisplay = document.getElementById('freteMelhorDisplay');
+            if (freteMelhorDisplay) freteMelhorDisplay.textContent = formatarMoeda(dados.frete);
         }
     });
 
@@ -519,10 +566,9 @@ function gerarResumoExecutivo(resultFornecedores, ranking) {
         if (vencedorGlobal) {
             const fDados = resultFornecedores[vencedorGlobal];
             resumoDiv.innerHTML = `
-                <div style="width: 100%">
-                    <strong>Fornecedor Recomendado:</strong> <span style="color:#48bb78; font-size: 15px;">${nomeVencedor}</span><br>
-                    <strong>Custo Total (C/ Frete):</strong> ${formatarMoeda(fDados.totalFinal)}<br>
-                    <strong>Condição de Pagamento:</strong> ${fDados.pgto}
+                <div style="width: 100%; color: #000;">
+                    <strong style="color: #000;">Fornecedor Recomendado:</strong> <span style="color: #000; font-size: 15px; font-weight: bold;">${nomeVencedor}</span><br>
+                    <strong style="color: #000;">Custo Total:</strong> ${formatarMoeda(fDados.totalFinal)}
                     ${textEconomia}
                 </div>
             `;
@@ -537,38 +583,66 @@ function calcularTotais() {
     const subtotais = calcularSubtotais();
     const resultFornecedores = {};
 
+    // --- CÁLCULO MESTRE UNIFICADO (v61) ---
+    // Descobrir Fornecedores Vencedores para agregar o Frete do "Melhor Preço"
+    const fornecedoresGanhadores = new Set();
+    document.querySelectorAll('#tableBody tr:not(.details-row)').forEach(linha => {
+        linha.querySelectorAll('.total-cell.melhor-preco').forEach(td => {
+            const f = td.dataset.fornecedor;
+            if (f) fornecedoresGanhadores.add(f);
+        });
+    });
+
     [...FORNECEDORES_KEYS, 'melhor'].forEach(fornecedor => {
         const subtotal = subtotais[fornecedor] || 0;
-        let frete = 0;
-        let pgto = "Não informado";
-
-        if (fornecedor !== 'melhor') {
-            const freteInput = document.querySelector(`.frete-input[data-fornecedor="${fornecedor}"]`);
-            frete = freteInput ? (parseFloat(freteInput.value) || 0) : 0;
-
-            const pgtoInput = document.querySelector(`.pgto-input[data-fornecedor="${fornecedor}"]`);
-            pgto = pgtoInput ? (pgtoInput.value || "Não informado") : "Não informado";
-        }
-
+        
+        // v61: Garantia matemática absoluta - O Total é a soma rigorosa de cada item
         resultFornecedores[fornecedor] = {
             subtotal: subtotal,
-            frete: frete,
-            totalFinal: subtotal + frete,
-            pgto: pgto
+            frete: 0, 
+            totalFinal: subtotal 
         };
     });
 
     const ranking = rankearFornecedores(resultFornecedores);
-    
-    // Limpa destaques antigos antes de aplicar novos
-    document.querySelectorAll('.total-final-row td').forEach(td => td.innerHTML = td.innerHTML.replace(/<span style="font-size:14px">.*?<\/span> /g, ''));
-    atualizarInterfaceTotais(resultFornecedores, ranking);
+
+    // Sincronização final com a Interface e Resumo
+    Object.entries(resultFornecedores).forEach(([fornecedor, dados]) => {
+        const subtotalElement = document.getElementById(`subtotal${capitalize(fornecedor)}`);
+        if (subtotalElement) subtotalElement.textContent = formatarMoeda(dados.subtotal);
+
+        const totalElement = document.getElementById(`total${capitalize(fornecedor)}`);
+        if (totalElement) {
+            // Preserva medalhas do ranking se existirem
+            let spanMedalha = '';
+            const winnerData = ranking.find(r => r.id === fornecedor);
+            if (winnerData && winnerData.medalha) spanMedalha = `<span style="font-size:14px">${winnerData.medalha}</span> `;
+            
+            totalElement.innerHTML = spanMedalha + formatarMoeda(dados.totalFinal);
+        }
+    });
+
     gerarResumoExecutivo(resultFornecedores, ranking);
+
+    // Destacar com fundo verde a célula vencedora no Total Líquido Final
+    document.querySelectorAll('.total-final-row td.melhor-preco').forEach(td => td.classList.remove('melhor-preco'));
+    if (ranking.length > 0) {
+        const valVencedor = ranking[0].id;
+        const celulaFinalVencedora = document.getElementById(`total${capitalize(valVencedor)}`);
+        if (celulaFinalVencedora) celulaFinalVencedora.classList.add('melhor-preco');
+    }
 }
 
-// Formatar valor como moeda brasileira
+// Formatar valor como moeda brasileira (Regra Exigida: Intl.NumberFormat)
 function formatarMoeda(valor) {
-    return 'R$ ' + valor.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    const num = parseFloat(valor);
+    if (isNaN(num)) return 'R$ 0,00';
+    return new Intl.NumberFormat('pt-BR', { 
+        style: 'currency', 
+        currency: 'BRL',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(num);
 }
 
 // Capitalizar primeira letra
@@ -578,7 +652,7 @@ function capitalize(str) {
 
 // Calcular todos os itens
 function calcularTudo() {
-    // Recalcular todas as linhas existentes
+    // 1. Recalcular todas as linhas existentes do DOM
     const linhas = document.querySelectorAll('#tableBody tr');
     linhas.forEach(linha => {
         const itemNum = linha.dataset.item;
@@ -587,40 +661,28 @@ function calcularTudo() {
         }
     });
     
-    // Destacar menor total geral por fornecedor
-    const totais = [];
+    // 2. Invocação direta da Macro Mestre de Matemática e Enforcer de Totais
+    calcularTotais();
     
-    FORNECEDORES_KEYS.forEach(fornecedor => {
-        const totalElement = document.getElementById(`total${capitalize(fornecedor)}`);
-        if (totalElement) {
-            const texto = totalElement.textContent.replace(/[^\d,-]/g, '').replace(',', '.').trim();
-            const valor = parseFloat(texto) || 0;
-            totais.push({ fornecedor, valor, element: totalElement });
-        }
-    });
-    
-    // Remover destaque anterior
-    totais.forEach(t => t.element.parentElement.classList.remove('melhor-preco'));
-    
-    // Destacar menor total
-    if (totais.filter(t => t.valor > 0).length > 0) {
-        const menorTotal = totais.reduce((min, curr) => curr.valor < min.valor ? curr : min);
-        menorTotal.element.parentElement.classList.add('melhor-preco');
-    }
-    
-    mostrarNotificacao('Cálculos realizados com sucesso!', 'success');
+    mostrarNotificacao('Cálculos atualizados de ponta a ponta!', 'success');
 }
 
-// Formatar quantidade com 2 casas decimais
+// Formatar quantidade com 2 casas decimais (Regra 1: 1,00)
 function formatarQuantidade(valor) {
-    const num = parseFloat(valor) || 0;
-    return num.toFixed(2).replace('.', ',');
+    const num = parseFloat(valor);
+    if (isNaN(num)) return '0,00';
+    return num.toLocaleString('pt-BR', { 
+        minimumFractionDigits: 2, 
+        maximumFractionDigits: 2 
+    });
 }
 
-// Formatar valor em Reais (moeda corrente)
+// Formatar valor em Reais
 function formatarReais(valor) {
-    const num = parseFloat(valor) || 0;
-    return 'R$ ' + num.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    if (!valor && valor !== 0) return 'R$ 0,00';
+    const num = parseFloat(valor);
+    if (isNaN(num)) return 'R$ 0,00';
+    return formatarMoeda(num);
 }
 
 // =================================================================
@@ -629,159 +691,13 @@ function formatarReais(valor) {
 
 // Prepara o visual da página para a impressão, trocando inputs por texto.
 function prepararParaImpressao() {
-    // Evita execução duplicada se já estiver preparado
-    if (document.querySelector('.print-value')) return;
-    
-    // Converter inputs de quantidade
-    document.querySelectorAll('.qtd-input').forEach(input => {
-        if (!input) return;
-        const span = document.createElement('span');
-        span.textContent = (input.value && input.value.trim() !== '') ? formatarQuantidade(input.value) : '';
-        span.className = input.className + ' print-value';
-        span.dataset.originalInput = 'true';
-        input.style.display = 'none';
-        input.parentNode?.insertBefore(span, input);
-    });
-    
-    // Converter inputs de preço unitário (em Reais)
-    document.querySelectorAll('.unit-input').forEach(input => {
-        if (!input) return;
-        const span = document.createElement('span');
-        span.textContent = (input.value && input.value.trim() !== '') ? formatarReais(input.value) : ''; 
-        span.className = input.className + ' print-value';
-        span.dataset.originalInput = 'true';
-        input.style.display = 'none';
-        input.parentNode?.insertBefore(span, input);
-    });
-    
-    // Converter inputs de desconto
-    document.querySelectorAll('.desc-input').forEach(input => {
-        if (!input) return;
-        const span = document.createElement('span');
-        const valor = input.value ? input.value.trim() : '';
-        span.textContent = (valor && valor !== '0') ? valor + '%' : '';
-        span.className = input.className + ' print-value';
-        span.dataset.originalInput = 'true';
-        input.style.display = 'none';
-        input.parentNode?.insertBefore(span, input);
-    });
-    
-    // Converter selects da tabela (excluindo os selects de fornecedores que têm tratamento especial)
-    document.querySelectorAll('.cotacao-table select:not(.select-fornecedor)').forEach(select => {
-        if (!select) return;
-        const span = document.createElement('span');
-        let text = '';
-        if (select.selectedIndex >= 0 && select.options && select.options.length > select.selectedIndex) {
-            const option = select.options[select.selectedIndex];
-            if (option && option.value !== "") text = option.text;
-        }
-        span.textContent = text; 
-        span.className = select.className + ' print-value';
-        span.dataset.originalSelect = 'true';
-        select.style.display = 'none';
-        select.parentNode?.insertBefore(span, select);
-    });
-    
-    // Converter selects de fornecedores com cor branca e maiúscula
-    document.querySelectorAll('.select-fornecedor').forEach(select => {
-        if (!select) return;
-        const span = document.createElement('span');
-        let text = '';
-        if (select.selectedIndex >= 0 && select.options && select.options.length > select.selectedIndex) {
-            const option = select.options[select.selectedIndex];
-            if (option) text = option.text.toUpperCase(); // Força texto em maiúscula
-        }
-        span.textContent = text;
-        span.className = 'fornecedor-print-value';
-        span.dataset.originalSelect = 'true';
-        select.style.display = 'none';
-        select.parentNode?.insertBefore(span, select);
-    });
-    
-    // Converter campos adicionais (frete, pgto)
-    document.querySelectorAll('.frete-input, .pgto-input').forEach(input => {
-        if (!input) return;
-        const span = document.createElement('span');
-        const valor = input.value ? input.value.trim() : '';
-        span.textContent = valor;
-        span.className = input.className + ' print-value';
-        if (input.classList.contains('frete-input') && valor) span.textContent = formatarMoeda(parseFloat(valor) || 0);
-        span.dataset.originalInput = 'true';
-        input.style.display = 'none';
-        input.parentNode?.insertBefore(span, input);
-    });
-
-    // Converter textareas
-    document.querySelectorAll('.textarea-justificativa').forEach(textarea => {
-        if (!textarea) return;
-        const span = document.createElement('span');
-        const text = textarea.value.trim();
-        span.textContent = text || 'Sem justificativas adicionais descritas para esta cotação.';
-        span.className = textarea.className + ' print-value';
-        span.style.textAlign = 'left';
-        span.dataset.originalTextarea = 'true';
-        textarea.style.display = 'none';
-        textarea.parentNode?.insertBefore(span, textarea);
-        span.style.padding = '8px';
-    });
-
-    // Converter selects e inputs do cabeçalho e novas assinaturas
-    document.querySelectorAll('.header select, .header input, .assinaturas-diretoria select, .assinaturas-diretoria input').forEach(element => {
-        if (!element) return;
-        const span = document.createElement('span');
-        if (element.tagName === 'SELECT') {
-            let text = '';
-            if (element.selectedIndex >= 0 && element.options && element.options.length > element.selectedIndex) {
-                const option = element.options[element.selectedIndex];
-                if (option && option.value !== "") text = option.text;
-                else text = '__________________________';
-            }
-            span.textContent = text;
-        } else {
-            // Se for entrada de data (YYYY-MM-DD), inverte para formato local DD/MM/YYYY
-            if (element.type === 'date' && element.value) {
-                const partes = element.value.split('-');
-                if (partes.length === 3) {
-                    span.textContent = `${partes[2]}/${partes[1]}/${partes[0]}`;
-                } else {
-                    span.textContent = element.value;
-                }
-            } else {
-                span.textContent = element.value || '';
-            }
-        }
-        
-        span.className = 'print-value';
-        if (element.closest('.header')) {
-            span.classList.add('header-print-value');
-        } else {
-            span.classList.add('assinatura-print-value');
-            span.style.fontWeight = 'bold';
-        }
-        span.dataset.originalElement = 'true';
-        element.style.display = 'none';
-        element.parentNode?.insertBefore(span, element);
-    });
+    // A conversão dinâmica JS foi substituída por estilização nativa no CSS de impressão (style.css) 
+    // para evitar conflitos de renderização (Desaparecimento de Item/Qtd/Und) no navegador.
 }
 
 // Restaura a tela para o modo de edição após a impressão.
 function restaurarAposImpressao() {
-    // Remover spans temporários de forma mais agressiva
-    document.querySelectorAll('.print-value, .fornecedor-print-value').forEach(span => {
-        span.parentNode?.removeChild(span);
-    });
-    
-    // Garantir remoção por atributos de dataset
-    document.querySelectorAll('[data-originalInput="true"], [data-originalSelect="true"], [data-originalElement="true"], [data-originalTextarea="true"]').forEach(span => {
-        span.parentNode?.removeChild(span);
-    });
-    
-    // Mostrar inputs/selects novamente globalmente incluindo fretes
-    document.querySelectorAll('.cotacao-table input, .cotacao-table select, .select-fornecedor, .header select, .header input, .assinaturas-diretoria select, .assinaturas-diretoria input, .frete-input, .pgto-input, .textarea-justificativa').forEach(element => {
-        if (element) {
-            element.style.display = '';
-        }
-    });
+    // Sem necessidade de restaurar, pois o DOM não é mais alterado por JS no beforeprint.
 }
 
 // Função principal chamada pelo botão "Gerar PDF".
@@ -814,15 +730,8 @@ async function gerarPDF() {
     }
 }
 
-// Eventos globais para garantir que Ctrl+P funcione corretamente
-window.addEventListener('beforeprint', () => {
-    calcularTudo();
-    prepararParaImpressao();
-});
-
-window.addEventListener('afterprint', () => {
-    restaurarAposImpressao();
-});
+// Evento beforeprint UNIFICADO - removido o listener duplicado que existia no fundo do arquivo.
+// O listener definitivo está logo abaixo, na seção de Tratamento Definitivo para PDF.
 
 // Abrir modal de cotações
 async function abrirModalCotacoes() {
@@ -923,18 +832,93 @@ function limparCotacao() {
     window.location.reload();
 }
 
-// --- Funções Auxiliares de Formatação para PDF ---
+// (formatarQuantidade e formatarReais já definidas acima - NÃO duplicar)
 
-function formatarQuantidade(valor) {
-    if (!valor) return '0';
-    const num = parseFloat(valor);
-    if (isNaN(num)) return valor;
-    return num.toString();
+// --- Funções Auxiliares de Máscara de Frete ---
+function desformatarReais(valorCustom) {
+    if (!valorCustom) return 0;
+    let limpo = valorCustom.toString().replace(/[^\d.,-]/g, '');
+
+    // Caso possua ambos (ex: 1.500,50) ou só vírgula (ex: 15,50)
+    if (limpo.indexOf('.') > -1 && limpo.indexOf(',') > -1) {
+        limpo = limpo.replace(/\./g, '');
+        limpo = limpo.replace(',', '.');
+    } else if (limpo.indexOf(',') > -1) {
+        limpo = limpo.replace(',', '.');
+    } else if (limpo.indexOf('.') > -1) {
+        // Possui apenas ponto num padrão que simula Milhar do Brasil (Ex: '5.000' querendo dizer 5000)
+        // Ignorar decimal caso tenha formatado milhares no preenchimento seco.
+        if (/^\d{1,3}(\.\d{3})+$/.test(limpo)) {
+            limpo = limpo.replace(/\./g, '');
+        }
+    }
+    
+    return parseFloat(limpo) || 0;
 }
 
-function formatarReais(valor) {
-    if (!valor) return 'R$ 0,00';
-    const num = parseFloat(valor);
-    if (isNaN(num)) return 'R$ 0,00';
-    return formatarMoeda(num);
+function handleFreteFocus(input) {
+    let num = desformatarReais(input.value);
+    if (num === 0) {
+        input.value = '';
+    } else {
+        input.value = num.toFixed(2).replace('.', ',');
+    }
 }
+
+function handleFreteBlur(input) {
+    let num = desformatarReais(input.value);
+    input.value = formatarMoeda(num);
+    calcularTotais();
+}
+
+// === TRATAMENTO PARA PDF: formata valores dos inputs antes de imprimir ===
+let _valoresOriginais = [];
+
+window.addEventListener('beforeprint', () => {
+    // 1. Forçar blur para garantir que o último input seja processado
+    if (document.activeElement && typeof document.activeElement.blur === 'function') {
+        document.activeElement.blur();
+    }
+
+    // 2. Recalcular tudo para o PDF refletir a tela
+    calcularTudo();
+
+    // 3. Salvar valores originais e aplicar formatação de impressão
+    _valoresOriginais = [];
+
+    // Formatar QTD (Regra 2: 1,00)
+    document.querySelectorAll('.qtd-input').forEach(input => {
+        _valoresOriginais.push({ el: input, val: input.value });
+        const num = desformatarReais(input.value);
+        input.value = num > 0 ? formatarQuantidade(num) : '';
+    });
+
+    // Formatar UNIT (Regra 2: R$ X,XX)
+    document.querySelectorAll('.unit-input').forEach(input => {
+        _valoresOriginais.push({ el: input, val: input.value });
+        const num = desformatarReais(input.value);
+        input.value = num > 0 ? formatarMoeda(num) : '';
+    });
+
+    // Formatar DESC (v61: Obrigatoriamente X,XX%)
+    document.querySelectorAll('.desc-input').forEach(input => {
+        _valoresOriginais.push({ el: input, val: input.value });
+        const num = desformatarReais(input.value);
+        input.value = num.toFixed(2).replace('.', ',') + '%';
+    });
+
+    // Formatar FRETE (R$ X,XX)
+    document.querySelectorAll('.frete-input').forEach(input => {
+        _valoresOriginais.push({ el: input, val: input.value });
+        const num = desformatarReais(input.value);
+        input.value = formatarMoeda(num);
+    });
+});
+
+window.addEventListener('afterprint', () => {
+    // Restaurar valores originais para a tela de edição
+    _valoresOriginais.forEach(item => {
+        item.el.value = item.val;
+    });
+    _valoresOriginais = [];
+});
