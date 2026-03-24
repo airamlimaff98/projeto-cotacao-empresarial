@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css?v=46">
+    <link rel="stylesheet" href="style.css?v=49">
     <script src="fornecedores.js"></script>
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -218,6 +218,15 @@
                             <td class="melhor total-value" id="freteMelhorDisplay" colspan="3">R$ 0,00</td>
                         </tr>
 
+                        <tr class="condicao-pagamento-row">
+                            <td colspan="3"><strong>CONDIÇÃO DE PAGAMENTO</strong></td>
+                            <td class="condec" colspan="3"><input type="text" class="condicao-input" data-fornecedor="condec"></td>
+                            <td class="teleaco" colspan="3"><input type="text" class="condicao-input" data-fornecedor="teleaco"></td>
+                            <td class="premolnitos" colspan="3"><input type="text" class="condicao-input" data-fornecedor="premolnitos"></td>
+                            <td class="melhor total-value" colspan="3">-</td>
+                        </tr>
+
+
                         <tr class="total-final-row">
                             <td colspan="3"><strong>TOTAL LÍQUIDO FINAL</strong></td>
                             <td class="condec total-final-value" id="totalCondec" colspan="3">R$ 0,00</td>
@@ -325,8 +334,8 @@
         </div>
     </div>
 
-    <script src="gerenciar-selects.js?v=46"></script>
-    <script src="script.js?v=46"></script>
+    <script src="gerenciar-selects.js?v=49"></script>
+    <script src="script.js?v=49"></script>
 </body>
 
 </html>

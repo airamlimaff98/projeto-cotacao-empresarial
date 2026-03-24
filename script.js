@@ -110,7 +110,7 @@ function adicionarItem() {
         <td class="melhor total-cell melhor-total" data-item="${itemCount}">
             <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
                 <span class="melhor-valor">R$ 0,00</span>
-                <span class="melhor-fornecedor" style="font-size:9px;font-weight:normal;">-</span>
+                <span class="melhor-fornecedor" style="font-size:7px;font-weight:normal;">-</span>
             </div>
         </td>
     `;

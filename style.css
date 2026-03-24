@@ -796,6 +796,33 @@ td.melhor-preco input:focus {
     background-color: var(--cor-input-bg);
 }
 
+.condicao-pagamento-row td {
+    border: 1px solid #ccc !important;
+    background-color: #2d3748;
+    color: #e2e8f0;
+    font-weight: 600;
+}
+
+.condicao-input {
+    width: 100%;
+    height: 100%;
+    background-color: transparent !important;
+    border: 1px solid #4a5568 !important;
+    color: #e2e8f0 !important;
+    text-align: center;
+    font-size: 13px;
+    padding: 6px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.condicao-input:focus {
+    border-color: #3182ce !important;
+    background-color: #1e1e24 !important;
+}
+
 /* Responsividade */
 @media screen and (max-width: 1200px) {
     .cotacao-table {
@@ -1150,6 +1177,17 @@ td.melhor-preco input:focus {
         box-sizing: border-box !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
+    }
+
+    /* v70: Evitar estouro de nome de fornecedor no Melhor Preço */
+    .melhor-fornecedor {
+        font-size: 5.2pt !important;
+        display: block !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        line-height: 1.1 !important;
     }
 
     .cotacao-table th {

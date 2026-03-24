@@ -47,17 +47,17 @@ function coletarDadosCotacao() {
             condec: { 
                 nome: document.querySelector('.select-fornecedor[data-fornecedor="condec"]')?.value || 'N/T',
                 frete: parseFloat(document.querySelector('.condec .frete-input')?.value) || 0,
-                pgto: document.querySelector('.condec .pgto-input')?.value || ''
+                pgto: document.querySelector('.condec .condicao-input')?.value || ''
             },
             teleaco: { 
                 nome: document.querySelector('.select-fornecedor[data-fornecedor="teleaco"]')?.value || 'N/T',
                 frete: parseFloat(document.querySelector('.teleaco .frete-input')?.value) || 0,
-                pgto: document.querySelector('.teleaco .pgto-input')?.value || ''
+                pgto: document.querySelector('.teleaco .condicao-input')?.value || ''
             },
             premolnitos: { 
                 nome: document.querySelector('.select-fornecedor[data-fornecedor="premolnitos"]')?.value || 'N/T',
                 frete: parseFloat(document.querySelector('.premolnitos .frete-input')?.value) || 0,
-                pgto: document.querySelector('.premolnitos .pgto-input')?.value || ''
+                pgto: document.querySelector('.premolnitos .condicao-input')?.value || ''
             }
         },
         itens: [],
@@ -203,7 +203,7 @@ function preencherFormulario(dados) {
                 const freteInp = document.querySelector(`.${fKey} .frete-input`);
                 if (freteInp) freteInp.value = fData.frete || 0;
 
-                const pgtoInp = document.querySelector(`.${fKey} .pgto-input`);
+                const pgtoInp = document.querySelector(`.${fKey} .condicao-input`);
                 if (pgtoInp) pgtoInp.value = fData.pgto || '';
             }
         });
