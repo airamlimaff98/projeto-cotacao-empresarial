@@ -46,7 +46,7 @@
                 <div class="field-row">
                     <label>Obra / Centro de Custo:</label>
                     <div class="input-with-button">
-                        <select id="centroCusto">
+                        <select id="centroCusto" onchange="validarBotaoPDF()">
                             <option value="">Selecione</option>
                             <option value="3P ENERGIA - NOVA DESCOBERTA">3P ENERGIA - NOVA DESCOBERTA</option>
                             <option value="A SERVIÇO - SWEET FRUIT">A SERVIÇO - SWEET FRUIT</option>
@@ -125,7 +125,7 @@
                 </div>
                 <div class="field-row">
                     <label>Grau de Prioridade:</label>
-                    <select id="prioridade">
+                    <select id="prioridade" onchange="validarBotaoPDF()">
                         <option value="">Selecione</option>
                         <option value="baixa">Baixa</option>
                         <option value="media">Média</option>
@@ -277,7 +277,7 @@
                 <div class="assinatura-box">
                     <div class="assinatura-linha-vazia"></div>
                     <div class="assinatura-cargo">
-                        <select>
+                        <select id="solicitante" onchange="validarBotaoPDF()">
                             <option value="">(Selecione Solicitante)</option>
                             <option value="Bruno Éricles">Bruno Éricles</option>
                             <option value="Airam Filgueira">Airam Filgueira</option>

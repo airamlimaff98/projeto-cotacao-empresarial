@@ -16,6 +16,11 @@ const FORNECEDORES_KEYS = ['condec', 'teleaco', 'premolnitos'];
 
 // Inicializar com 5 itens ao carregar a página
 window.addEventListener('DOMContentLoaded', async () => {
+    // Inicializar validação do botão de PDF
+    if (typeof validarBotaoPDF === 'function') {
+        validarBotaoPDF();
+    }
+
     // Definir data atual
     const hoje = new Date();
     const dataFormatada = hoje.toISOString().split('T')[0];
@@ -700,8 +705,36 @@ function restaurarAposImpressao() {
     // Sem necessidade de restaurar, pois o DOM não é mais alterado por JS no beforeprint.
 }
 
+// Validação do botão de PDF (Feedback Visual)
+function validarBotaoPDF() {
+    const centroCusto = document.getElementById('centroCusto')?.value;
+    const prioridade = document.getElementById('prioridade')?.value;
+    const solicitante = document.getElementById('solicitante')?.value;
+    const btnPdf = document.querySelector('.btn-pdf');
+    
+    if (btnPdf) {
+        if (!centroCusto || !prioridade || !solicitante) {
+            btnPdf.style.opacity = '0.5';
+            btnPdf.style.cursor = 'not-allowed';
+        } else {
+            btnPdf.style.opacity = '1';
+            btnPdf.style.cursor = 'pointer';
+        }
+    }
+}
+
 // Função principal chamada pelo botão "Gerar PDF".
 async function gerarPDF() {
+    // Validação Obrigatória
+    const centroCusto = document.getElementById('centroCusto')?.value;
+    const prioridade = document.getElementById('prioridade')?.value;
+    const solicitante = document.getElementById('solicitante')?.value;
+
+    if (!centroCusto || !prioridade || !solicitante) {
+        alert('Por favor, preencha Solicitante, Obra e Prioridade antes de gerar o PDF.');
+        return; // Impede a geração do PDF
+    }
+
     try {
         // Garantir que os cálculos estão atualizados
         if (typeof calcularTudo === 'function') {
